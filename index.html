@@ -258,10 +258,148 @@
         .score-low-average, .score-below-average, .score-exceptionally-low {
             animation: subtle-pulse 2s infinite;
         }
-        
+
         @keyframes subtle-pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.85; }
+        }
+
+        /* =============================================
+           CAIXAS DE INSTRUÇÃO AO PACIENTE E PONTUAÇÃO
+           ============================================= */
+
+        /* Caixa de instrução para leitura ao paciente */
+        .patient-instruction {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border: 2px solid #ffc107;
+            border-left: 6px solid #e65100;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 10px 0 12px 0;
+        }
+        .patient-instruction-header {
+            font-weight: bold;
+            font-size: 0.82em;
+            color: #e65100;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .patient-instruction p {
+            margin: 6px 0 0 0;
+            font-style: italic;
+            color: #37474f;
+            line-height: 1.65;
+        }
+        .patient-instruction p strong {
+            font-style: normal;
+            color: #bf360c;
+        }
+        .patient-instruction .trial-break {
+            border-top: 1px dashed #ffc107;
+            margin: 10px 0;
+            padding-top: 10px;
+        }
+
+        /* Nota de procedimento para o examinador */
+        .examiner-note {
+            background: #f3e5f5;
+            border-left: 5px solid #7b1fa2;
+            border-radius: 0 6px 6px 0;
+            padding: 9px 14px;
+            margin: 8px 0;
+            font-size: 0.9em;
+            color: #4a148c;
+            line-height: 1.5;
+        }
+        .examiner-note strong {
+            color: #4a148c;
+        }
+
+        /* Caixa de critérios de pontuação */
+        .scoring-guide {
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
+            border: 2px solid #1976d2;
+            border-left: 6px solid #0d47a1;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 0 0 14px 0;
+        }
+        .scoring-guide-header {
+            font-weight: bold;
+            font-size: 0.82em;
+            color: #0d47a1;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .scoring-guide ul {
+            margin: 4px 0 0 0;
+            padding-left: 20px;
+        }
+        .scoring-guide ul li {
+            margin: 5px 0;
+            color: #1a237e;
+            line-height: 1.55;
+        }
+        .scoring-guide ul li strong {
+            color: #0d47a1;
+        }
+        .score-pill {
+            display: inline-block;
+            background: #0d47a1;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.88em;
+        }
+        .stop-rule {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 4px;
+            padding: 6px 10px;
+            margin-top: 6px;
+            color: #b71c1c;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /* Caixa de treino */
+        .training-box {
+            background: #e8f5e9;
+            border: 1px dashed #4caf50;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        .training-box strong {
+            color: #1b5e20;
+        }
+
+        /* Separador visual entre tentativas */
+        .trial-header {
+            background: #546e7a;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin: 14px 0 8px 0;
+            display: inline-block;
+        }
+
+        @media print {
+            .patient-instruction { border: 2px solid #999; background: #fffde7; }
+            .scoring-guide { border: 2px solid #555; background: #e3f2fd; }
+            .examiner-note { background: #f5f5f5; }
         }
     </style>
 </head>
@@ -308,10 +446,26 @@
                 <!-- 1. Memória Verbal Imediata -->
                 <div class="test-section">
                     <h4>1. Memória Verbal com Evocação Livre Imediata (0-12 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nas palavras que o paciente recordou corretamente. O maior escore entre as três tentativas será usado.</p>
-                    
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Leia cada palavra em voz alta no ritmo de <strong>uma palavra por segundo</strong>, sem entoação especial.</li>
+                            <li>Realize <strong>3 tentativas</strong> consecutivas com a mesma lista de 12 palavras.</li>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada palavra recordada corretamente em cada tentativa.</li>
+                            <li><strong>Não aceitar:</strong> palavras incorretas, intrusões (palavras que não estão na lista), ou repetições dentro da mesma tentativa.</li>
+                            <li>A ordem de evocação <strong>não importa</strong> — o paciente pode dizer as palavras em qualquer ordem.</li>
+                            <li>O <strong>escore final deste subteste</strong> é a <strong>maior pontuação</strong> entre as três tentativas (máx. 12).</li>
+                        </ul>
+                    </div>
+
                     <div class="mb-3">
-                        <h6>Tentativa 1:</h6>
+                        <span class="trial-header">▶ TENTATIVA 1</span>
+                        <div class="patient-instruction">
+                            <div class="patient-instruction-header">🔊 Leia ao Paciente — 1ª Tentativa</div>
+                            <p>"Eu vou ler uma lista de palavras e, quando finalizar, quero que você repita o maior número de palavras que puder se recordar. <strong>Não precisa ser na mesma ordem da minha leitura.</strong> Alguma dúvida? Podemos começar?"</p>
+                        </div>
+                        <div class="examiner-note">▶ Leia as 12 palavras abaixo em voz alta, uma por segundo. Ao concluir, aguarde em silêncio as respostas do paciente. Clique em cada palavra que o paciente recordar corretamente.</div>
                         <div class="word-grid" id="memory1">
                             <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="luz">LUZ</div>
                             <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="seda">SEDA</div>
@@ -330,7 +484,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <h6>Tentativa 2:</h6>
+                        <span class="trial-header">▶ TENTATIVA 2</span>
+                        <div class="patient-instruction">
+                            <div class="patient-instruction-header">🔊 Leia ao Paciente — 2ª Tentativa</div>
+                            <p>"Agora vou ler as mesmas palavras e quero que se lembre da maior quantidade que puder se lembrar, <strong>inclusive as palavras que já foram ditas na primeira tentativa.</strong> Não importa a ordem das palavras, procure dizer todas elas incluindo aquelas que já foram recordadas na vez anterior. Pronto?"</p>
+                        </div>
+                        <div class="examiner-note">▶ Leia novamente as 12 palavras no mesmo ritmo. Aguarde as respostas. Marque <em>todas</em> as palavras da lista que o paciente disser, mesmo que já tenham sido ditas na 1ª tentativa.</div>
                         <div class="word-grid" id="memory2">
                             <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="luz">LUZ</div>
                             <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="seda">SEDA</div>
@@ -349,7 +508,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <h6>Tentativa 3:</h6>
+                        <span class="trial-header">▶ TENTATIVA 3</span>
+                        <div class="patient-instruction">
+                            <div class="patient-instruction-header">🔊 Leia ao Paciente — 3ª Tentativa</div>
+                            <p>"Agora, vou ler as mesmas palavras pela terceira vez e quero que se lembre da maior quantidade que puder se lembrar, <strong>inclusive as palavras que já foram ditas nas tentativas anteriores.</strong> Não importa a ordem das palavras, procure dizer todas elas incluindo aquelas que já foram recordadas na vez anterior. Pronto?"</p>
+                        </div>
+                        <div class="examiner-note">▶ Leia as 12 palavras pela terceira e última vez. Aguarde as respostas. Marque todas as palavras da lista que o paciente recordar corretamente.</div>
                         <div class="word-grid" id="memory3">
                             <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="luz">LUZ</div>
                             <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="seda">SEDA</div>
@@ -368,14 +532,34 @@
                     </div>
 
                     <div class="alert alert-info">
-                        <strong>Maior Pontuação entre as três tentativas: <span id="immediateMemoryScore">0</span>/12</strong>
+                        <strong>⚠️ Escore Final — Maior Pontuação entre as três tentativas: <span id="immediateMemoryScore">0</span>/12</strong>
                     </div>
                 </div>
 
                 <!-- 2. Nomeação por Confronto Visual -->
                 <div class="test-section">
                     <h4>2. Nomeação por Confronto Visual (0-20 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nos itens que o paciente nomeou corretamente.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Instrução ao Paciente</div>
+                        <p>"Vou lhe mostrar uma série de figuras. Para cada uma, quero que me diga o nome do que está vendo."</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Mostre os <strong>20 cartões consecutivos</strong>, um por vez.</li>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada item nomeado corretamente (máx. 20).</li>
+                            <li><strong>Aceitar qualquer sinônimo</strong> listado na escala original (ex.: tartaruga / jaboti / cágado / tracajá; pipa / papagaio / arraia).</li>
+                            <li><strong>Não há limite de tempo</strong> para a resposta.</li>
+                            <li>Permitida <strong>apenas uma tentativa</strong> por item — não oferecer segunda chance.</li>
+                            <li><strong>Não fornecer pistas semânticas nem fonêmicas</strong> (não dizer categoria, letra inicial etc.).</li>
+                            <li>Para os itens apresentados <em>em contexto</em> — babador, fivela, crina, anzol, sino e casco — o examinador <strong>pode apontar a parte específica</strong> do desenho a ser nomeada.</li>
+                            <li>Respostas descritivas ("coisa de pescar") sem nomear o objeto: <strong>não pontuar</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Clique nos itens abaixo que o paciente nomeou corretamente (qualquer sinônimo aceito).</div>
                     
                     <div class="naming-grid">
                         <div class="word-item" onclick="toggleNaming(this)" data-item="babador">BABADOR</div>
@@ -408,7 +592,29 @@
                 <!-- 3. Atenção Sustentada -->
                 <div class="test-section">
                     <h4>3. Atenção Sustentada (0-10 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nos itens que o paciente respondeu corretamente (número de letras na sequência).</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente — Instrução Geral</div>
+                        <p>"Eu vou ler uma sequência de números e letras. Quando eu acabar, quero que me diga <strong>quantas letras</strong> você ouviu. Preste bastante atenção, pois não posso repetir."</p>
+                        <div class="trial-break"></div>
+                        <p><strong>Treino (leia em voz alta e aguarde a resposta):</strong></p>
+                        <p>"Por exemplo, vou dizer: <strong>2 — L — T.</strong> Quantas letras tem?" <em>(aguardar resposta: 2 letras)</em> "Muito bem! Se eu disser <strong>8 — A — 9,</strong> quantas letras tem?" <em>(aguardar resposta: 1 letra)</em> "Ok! Vamos começar?"</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Leia cada sequência em voz alta no ritmo de <strong>um item por segundo</strong>, sem enfatizar letras ou números.</li>
+                            <li><strong>Não repetir</strong> nenhuma sequência após a leitura.</li>
+                            <li>Realize os <strong>2 itens de treino</strong> (exemplos acima) antes de iniciar o teste formal.</li>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada sequência do teste em que o paciente indicar o número correto de letras.</li>
+                            <li>Há <strong>10 sequências de teste</strong> divididas em 5 níveis de complexidade crescente (2 séries por nível).</li>
+                            <li>O teste <strong>não tem regra de parada</strong> — aplique todas as 10 sequências.</li>
+                            <li>Respostas parciais ou incorretas: <strong>não pontuar</strong> (resposta deve ser exatamente o número correto de letras).</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Clique nas sequências em que o paciente respondeu corretamente (número exato de letras).</div>
                     
                     <div class="attention-item" onclick="toggleAttention(this)" data-sequence="2P654" data-answer="1">
                         <strong>2 P 6 5 4</strong> → Resposta correta: 1 letra
@@ -449,7 +655,28 @@
                 <!-- 4. Memória Operacional -->
                 <div class="test-section">
                     <h4>4. Memória Operacional (0-10 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nos itens que o paciente respondeu corretamente (números primeiro, depois letras).</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente — Instrução Geral</div>
+                        <p>"Vou ler uma lista de números e letras. Quando terminar, quero que você repita <strong>primeiro os números</strong> e <strong>depois as letras</strong>."</p>
+                        <div class="trial-break"></div>
+                        <p><strong>Treino (leia e aguarde a resposta antes de continuar):</strong></p>
+                        <p>"Por exemplo, vou dizer: <strong>L — 2 — T.</strong> O que você responde?" <em>(resposta esperada: "2 — L — T")</em> "Muito bem! Mais uma vez: <strong>8 — A — 9.</strong>" <em>(resposta esperada: "8 — 9 — A")</em> "Muito bem! Podemos começar?"</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Leia cada série em voz alta no ritmo de <strong>um item por segundo</strong>.</li>
+                            <li>O paciente deve repetir <strong>primeiro todos os números em ordem crescente</strong>, depois <strong>todas as letras em qualquer ordem</strong>.</li>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada série em que o paciente fornecer a resposta completamente correta.</li>
+                            <li>Qualquer erro na ordem dos números ou omissão de elemento: <strong>não pontuar</strong> aquela série.</li>
+                            <li>Realize os <strong>2 itens de treino</strong> antes de iniciar o teste formal. O treino <strong>não é pontuado</strong>.</li>
+                            <li class="stop-rule">🛑 REGRA DE PARADA: Interromper o teste quando o paciente errar <strong>2 séries consecutivas</strong>. As séries restantes recebem 0 ponto.</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Clique nas séries em que o paciente respondeu corretamente (números em ordem crescente primeiro, depois as letras).</div>
                     
                     <div class="memory-item" onclick="toggleMemory(this)" data-sequence="GM" data-answer="G M">
                         <strong>G 8 M</strong> → Resposta correta: 8 G M
@@ -490,7 +717,29 @@
                 <!-- 5. Desenho do Relógio - Interface Melhorada -->
                 <div class="test-section">
                     <h4>5. Desenho do Relógio (Espontâneo) (0-10 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nos critérios que o paciente atendeu no desenho espontâneo do relógio.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente</div>
+                        <p>"Quero que você desenhe um relógio com <strong>todos os números</strong>, com os ponteiros marcando <strong>dez horas e vinte e cinco minutos</strong>. O relógio deve ter um contorno e os dois ponteiros devem ser desenhados <strong>na forma de setas</strong>. Pode começar."</p>
+                    </div>
+
+                    <div class="examiner-note">▶ Entregue uma folha de papel em branco e um lápis ou caneta. Não forneça modelo ou auxílio. Quando concluído, avalie cada critério abaixo e clique nos que foram atendidos.</div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — 10 Critérios (1 ponto cada)</div>
+                        <ul>
+                            <li><strong>1. A figura parece um relógio</strong> — o desenho é reconhecível como um relógio (forma circular ou quadrada com características de relógio).</li>
+                            <li><strong>2. O relógio não é dividido por linhas ou setores</strong> — ausência de linhas internas que dividam o mostrador.</li>
+                            <li><strong>3. Há uma disposição simétrica dos números</strong> — os números estão aproximadamente equidistantes e distribuídos de forma simétrica ao redor do mostrador.</li>
+                            <li><strong>4. Somente são escritos números no intervalo de 1 a 12</strong> — não há números além de 1–12 escritos dentro do relógio.</li>
+                            <li><strong>5. Os números das horas estão corretamente sequenciados</strong> — os números de 1 a 12 aparecem em ordem horária, sem inversões ou saltos.</li>
+                            <li><strong>6. Somente dois ponteiros são desenhados</strong> — exatamente dois ponteiros (hora e minutos), nada mais.</li>
+                            <li><strong>7. Os ponteiros são representados como setas</strong> — ambos os ponteiros têm ponta de seta (não basta uma linha reta).</li>
+                            <li><strong>8. O ponteiro das horas é menor que o ponteiro dos minutos</strong> — o ponteiro que indica "10h" deve ser visivelmente menor que o que indica "25min".</li>
+                            <li><strong>9. Nenhuma palavra foi escrita</strong> — ausência de qualquer texto além dos números das horas.</li>
+                            <li><strong>10. O número "25" não foi desenhado</strong> — o paciente não escreveu "25" como número avulso no mostrador para indicar os minutos.</li>
+                        </ul>
+                    </div>
                     
                     <div class="row">
                         <div class="col-md-6">
@@ -547,7 +796,29 @@
                 <!-- 6. Cópia do Relógio - Interface Melhorada -->
                 <div class="test-section">
                     <h4>6. Cópia do Desenho do Relógio (0-10 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nos critérios que o paciente atendeu na cópia do relógio.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente</div>
+                        <p>"Agora, quero que você <strong>copie este relógio</strong> o mais parecido possível."</p>
+                    </div>
+
+                    <div class="examiner-note">▶ Apresente o cartão com o modelo do relógio. O paciente deve copiá-lo em uma folha em branco. Avalie cada critério abaixo ao término.</div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — 10 Critérios (1 ponto cada)</div>
+                        <ul>
+                            <li><strong>1. A figura parece um relógio</strong> — o desenho é reconhecível como relógio.</li>
+                            <li><strong>2. O relógio não é dividido por linhas ou setores</strong> — ausência de linhas internas dividindo o mostrador.</li>
+                            <li><strong>3. Há uma disposição simétrica dos números</strong> — números aproximadamente equidistantes e distribuídos simetricamente.</li>
+                            <li><strong>4. Somente são escritos números no intervalo de 1 a 12</strong> — apenas os números 1–12 dentro do relógio.</li>
+                            <li><strong>5. Os números das horas estão corretamente sequenciados</strong> — números de 1 a 12 em ordem horária, sem inversões.</li>
+                            <li><strong>6. Somente dois ponteiros são desenhados</strong> — exatamente dois ponteiros.</li>
+                            <li><strong>7. Os ponteiros são representados como setas</strong> — ambos com ponta de seta.</li>
+                            <li><strong>8. O ponteiro das horas é menor que o ponteiro dos minutos</strong> — diferença visível de tamanho entre os dois ponteiros.</li>
+                            <li><strong>9. Nenhuma palavra foi escrita</strong> — ausência de texto além dos números das horas.</li>
+                            <li><strong>10. O número "25" não foi desenhado</strong> — o "25" não aparece como número avulso no mostrador.</li>
+                        </ul>
+                    </div>
                     
                     <div class="row">
                         <div class="col-md-6">
@@ -604,7 +875,24 @@
                 <!-- 7. Memória Verbal Tardia -->
                 <div class="test-section" id="delayedMemorySection">
                     <h4>7. Memória Verbal de Evocação Livre Tardia (0-12 pontos)</h4>
-                    <p><strong>Instruções:</strong> Clique nas palavras que o paciente lembrou da lista inicial.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente</div>
+                        <p>"Quero que você tente se lembrar daquela lista de palavras que foi lida três vezes para você <strong>no início deste teste</strong>. Tente se lembrar da maior quantidade de palavras que puder, em qualquer ordem."</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Aplicar este subteste <strong>após os demais testes</strong> (relógio, fluências etc.), de modo a garantir um intervalo adequado desde a aprendizagem inicial.</li>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada palavra da lista original corretamente recordada (máx. 12).</li>
+                            <li><strong>Não fornecer pistas</strong> semânticas, fonêmicas ou de qualquer natureza.</li>
+                            <li>Não aceitar: palavras que não estão na lista original (intrusões) ou repetições da mesma palavra.</li>
+                            <li>A ordem de evocação <strong>não importa</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Clique nas palavras que o paciente recordar corretamente da lista aprendida no início.</div>
                     
                     <div class="word-grid" id="delayedMemoryGrid">
                         <div class="word-item" onclick="toggleDelayed(this)" data-word="luz">LUZ</div>
@@ -629,7 +917,26 @@
                 <!-- 8. Fluência Verbal Alternada -->
                 <div class="test-section">
                     <h4>8. Fluência Verbal Alternada (0-20 pontos)</h4>
-                    <p><strong>Instruções:</strong> Conte o número de respostas corretas que mantiveram a alternância entre palavras com 'S' e itens de vestuário.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente</div>
+                        <p>"Durante um minuto, quero que me diga a maior quantidade de palavras que <strong>comecem com a letra 'S'</strong>, de maneira alternada com a maior quantidade possível de <strong>itens do vestuário</strong>. Você irá dizer algo que começa com a letra 'S' e em seguida uma vestimenta. Depois outra palavra com 'S' e outra vestimenta. Lembre-se que as vestimentas podem começar com qualquer letra. <strong>Não use nomes próprios.</strong> Fará isto o mais rapidamente que puder por um minuto. Podemos começar?"</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada resposta correta que <strong>mantenha a alternância</strong> entre palavra iniciada por 'S' e item de vestuário (máx. 20).</li>
+                            <li><strong>Regra de alternância:</strong> S → vestuário → S → vestuário... A sequência deve ser rigorosamente alternada.</li>
+                            <li>Se o paciente <strong>quebrar a alternância</strong> (ex.: dizer dois 'S' seguidos), a(s) resposta(s) que violam a sequência <strong>não são pontuadas</strong>. A contagem retoma quando a alternância for restabelecida corretamente.</li>
+                            <li><strong>Não aceitar:</strong> nomes próprios (João, Paris), a mesma palavra com terminação diferente (sapo/sapa/sapinho), repetições.</li>
+                            <li>Itens de vestuário podem começar com qualquer letra (camisa, tênis, luva etc.).</li>
+                            <li>Marque exatamente <strong>60 segundos</strong> no cronômetro e interrompa ao fim do tempo.</li>
+                            <li>Registre as respostas na tabela abaixo e depois insira o total de pares alternados corretos.</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Marque o cronômetro em 60 segundos. Registre as palavras abaixo e conte os pares alternados corretos ao fim.</div>
                     
                     <div class="fluency-counter">
                         <label for="alternatedFluency" class="form-label">Número de respostas corretas alternadas:</label>
@@ -644,7 +951,27 @@
                 <!-- 9. Fluência Verbal de Ações -->
                 <div class="test-section">
                     <h4>9. Fluência Verbal de Ações (0-30 pontos)</h4>
-                    <p><strong>Instruções:</strong> Conte o número de ações (verbos) que o paciente disse corretamente.</p>
+
+                    <div class="patient-instruction">
+                        <div class="patient-instruction-header">🔊 Leia ao Paciente</div>
+                        <p>"Durante 60 segundos, quero que me diga o maior número de <strong>coisas diferentes que as pessoas fazem</strong>. Eu não quero que você use a mesma palavra com diferentes terminações, como 'comer, comendo, comido'. Também, me diga apenas palavras como <strong>'comer'</strong> ou <strong>'cheirar'</strong>, no lugar de uma frase ou sentença (ex.: 'indo comer'). Quero somente as palavras. Entendeu? Podemos começar?"</p>
+                    </div>
+
+                    <div class="scoring-guide">
+                        <div class="scoring-guide-header">📋 Como Pontuar — Instruções ao Examinador</div>
+                        <ul>
+                            <li>Marque <span class="score-pill">1 ponto</span> para cada verbo (ação) correto e único (máx. 30).</li>
+                            <li>Aceitar <strong>verbos no infinitivo</strong> que representem claramente uma ação humana (ex.: correr, dormir, cozinhar).</li>
+                            <li><strong>Não aceitar:</strong> a mesma raiz verbal com terminações diferentes (comer / comendo / comido conta como 1 resposta, apenas a primeira é pontuada).</li>
+                            <li><strong>Não aceitar:</strong> frases ou locuções verbais ("ir ao mercado", "vou dormir").</li>
+                            <li><strong>Não aceitar:</strong> substantivos que descrevem atividades mas não são verbos ("futebol", "natação").</li>
+                            <li><strong>Não aceitar:</strong> repetições da mesma palavra já dita.</li>
+                            <li>Marque exatamente <strong>60 segundos</strong> e interrompa ao fim do tempo.</li>
+                            <li>Registre cada resposta para conferência posterior e insira o total de verbos corretos abaixo.</li>
+                        </ul>
+                    </div>
+
+                    <div class="examiner-note">▶ Marque 60 segundos no cronômetro. Anote as respostas do paciente e depois insira o total de ações corretas.</div>
                     
                     <div class="fluency-counter">
                         <label for="actionFluency" class="form-label">Número de ações corretas:</label>

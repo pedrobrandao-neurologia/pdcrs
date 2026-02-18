@@ -1,0 +1,1630 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD-CRS - Calculadora de Pontuação</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .word-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .word-item:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+        .word-item.selected {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        .results-section {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .percentile-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .naming-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .attention-item, .memory-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .attention-item:hover, .memory-item:hover {
+            border-color: #007bff;
+        }
+        .attention-item.selected, .memory-item.selected {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        .fluency-counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        /* Melhorar checkboxes do relógio */
+        .clock-checkbox-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .clock-checkbox-item:hover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .clock-checkbox-item.selected {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        
+        .clock-checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+        
+        .clock-checkbox-item label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        /* Escala de cores baseada na AACN para classificação de escores */
+        /* DESEMPENHO PRESERVADO/SUPERIOR (tons de verde e azul) */
+        .score-exceptionally-high {
+            background-color: #155724 !important;  /* Verde muito escuro */
+            color: white;
+            border: 2px solid #0f4419;
+        }
+        .score-above-average {
+            background-color: #28a745 !important;  /* Verde médio */
+            color: white;
+            border: 2px solid #1e7e34;
+        }
+        .score-high-average {
+            background-color: #40c463 !important;  /* Verde claro */
+            color: white;
+            border: 2px solid #28a745;
+        }
+        .score-average {
+            background-color: #007bff !important;  /* Azul (neutro) */
+            color: white;
+            border: 2px solid #0056b3;
+        }
+        
+        /* DESEMPENHO COMPROMETIDO/DEFICITÁRIO (tons de amarelo, laranja e vermelho) */
+        .score-low-average {
+            background-color: #ffc107 !important;  /* Amarelo (atenção) */
+            color: #000;
+            font-weight: bold;
+            border: 2px solid #e0a800;
+        }
+        .score-below-average {
+            background-color: #fd7e14 !important;  /* Laranja (preocupante) */
+            color: white;
+            font-weight: bold;
+            border: 2px solid #dc6406;
+        }
+        .score-exceptionally-low {
+            background-color: #dc3545 !important;  /* Vermelho (déficit) */
+            color: white;
+            font-weight: bold;
+            border: 2px solid #bd2130;
+        }
+        
+        .interpretation-label {
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        /* Melhorar visibilidade das cores na tabela de subtestes */
+        #subtestResults tr {
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        /* DESEMPENHO PRESERVADO/SUPERIOR */
+        #subtestResults tr.score-exceptionally-high td {
+            background-color: #155724 !important;  /* Verde muito escuro */
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid #0f4419;
+        }
+        
+        #subtestResults tr.score-above-average td {
+            background-color: #28a745 !important;  /* Verde médio */
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid #1e7e34;
+        }
+        
+        #subtestResults tr.score-high-average td {
+            background-color: #40c463 !important;  /* Verde claro */
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid #28a745;
+        }
+        
+        #subtestResults tr.score-average td {
+            background-color: #007bff !important;  /* Azul neutro */
+            color: white !important;
+            font-weight: normal;
+            border: 2px solid #0056b3;
+        }
+        
+        /* DESEMPENHO COMPROMETIDO/DEFICITÁRIO */
+        #subtestResults tr.score-low-average td {
+            background-color: #ffc107 !important;  /* Amarelo - atenção */
+            color: #000 !important;
+            font-weight: bold;
+            border: 2px solid #e0a800;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        #subtestResults tr.score-below-average td {
+            background-color: #fd7e14 !important;  /* Laranja - preocupante */
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid #dc6406;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        #subtestResults tr.score-exceptionally-low td {
+            background-color: #dc3545 !important;  /* Vermelho - déficit */
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid #bd2130;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+        }
+        
+        /* Hover effects para melhor interatividade */
+        #subtestResults tr:hover td {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+        
+        /* Estilos para badges da legenda */
+        .badge {
+            padding: 8px 12px;
+            font-size: 0.75em;
+            margin: 2px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        /* Destaque visual para áreas comprometidas */
+        .score-low-average, .score-below-average, .score-exceptionally-low {
+            animation: subtle-pulse 2s infinite;
+        }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-4">
+                    <h1 class="display-4 text-primary">PD-CRS</h1>
+                    <p class="lead">Escala de Avaliação Cognitiva da Doença de Parkinson</p>
+                </div>
+
+                <!-- Dados do Paciente -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3>Dados do Paciente</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="patientName" class="form-label">Nome:</label>
+                                <input type="text" class="form-control" id="patientName">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="age" class="form-label">Idade:</label>
+                                <input type="number" class="form-control" id="age" min="20" max="94" onchange="calculateScores()">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="education" class="form-label">Escolaridade (anos):</label>
+                                <input type="number" class="form-control" id="education" min="0" max="25" onchange="calculateScores()">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="sex" class="form-label">Sexo:</label>
+                                <select class="form-control" id="sex" onchange="calculateScores()">
+                                    <option value="">Selecione</option>
+                                    <option value="0">Masculino</option>
+                                    <option value="1">Feminino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1. Memória Verbal Imediata -->
+                <div class="test-section">
+                    <h4>1. Memória Verbal com Evocação Livre Imediata (0-12 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nas palavras que o paciente recordou corretamente. O maior escore entre as três tentativas será usado.</p>
+                    
+                    <div class="mb-3">
+                        <h6>Tentativa 1:</h6>
+                        <div class="word-grid" id="memory1">
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="luz">LUZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="seda">SEDA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="areia">AREIA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="cilio">CÍLIO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="arroz">ARROZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="gravata">GRAVATA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="quadro">QUADRO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="bicicleta">BICICLETA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="estrela">ESTRELA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="leao">LEÃO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="anel">ANEL</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="perfume">PERFUME</div>
+                        </div>
+                        <p>Pontuação Tentativa 1: <span id="score1">0</span>/12</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Tentativa 2:</h6>
+                        <div class="word-grid" id="memory2">
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="luz">LUZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="seda">SEDA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="areia">AREIA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="cilio">CÍLIO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="arroz">ARROZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="gravata">GRAVATA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="quadro">QUADRO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="bicicleta">BICICLETA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="estrela">ESTRELA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="leao">LEÃO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="anel">ANEL</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="perfume">PERFUME</div>
+                        </div>
+                        <p>Pontuação Tentativa 2: <span id="score2">0</span>/12</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Tentativa 3:</h6>
+                        <div class="word-grid" id="memory3">
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="luz">LUZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="seda">SEDA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="areia">AREIA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="cilio">CÍLIO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="arroz">ARROZ</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="gravata">GRAVATA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="quadro">QUADRO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="bicicleta">BICICLETA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="estrela">ESTRELA</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="leao">LEÃO</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="anel">ANEL</div>
+                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="perfume">PERFUME</div>
+                        </div>
+                        <p>Pontuação Tentativa 3: <span id="score3">0</span>/12</p>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Maior Pontuação entre as três tentativas: <span id="immediateMemoryScore">0</span>/12</strong>
+                    </div>
+                </div>
+
+                <!-- 2. Nomeação por Confronto Visual -->
+                <div class="test-section">
+                    <h4>2. Nomeação por Confronto Visual (0-20 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nos itens que o paciente nomeou corretamente.</p>
+                    
+                    <div class="naming-grid">
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="babador">BABADOR</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="vela">VELA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="cerejas">CEREJAS/MAÇÃS</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="banqueta">BANQUETA/BANQUINHO</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="ancora">ÂNCORA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="tartaruga">TARTARUGA/JABOTI</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="pipa">PIPA/PAPAGAIO</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="aquario">AQUÁRIO</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="lampada">LÂMPADA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="violao">VIOLÃO/GUITARRA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="fivela">FIVELA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="crina">CRINA/JUBA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="anzol">ANZOL</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="chave">CHAVE DE FENDA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="anteparo">ANTEPARO/BIOMBO</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="alfinete">ALFINETE</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="sino">SINO/GUIZO</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="casco">CASCO/PATA</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="extintor">EXTINTOR</div>
+                        <div class="word-item" onclick="toggleNaming(this)" data-item="fechadura">FECHADURA/TRINCO</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Nomeação: <span id="namingScore">0</span>/20</strong>
+                    </div>
+                </div>
+
+                <!-- 3. Atenção Sustentada -->
+                <div class="test-section">
+                    <h4>3. Atenção Sustentada (0-10 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nos itens que o paciente respondeu corretamente (número de letras na sequência).</p>
+                    
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="2P654" data-answer="1">
+                        <strong>2 P 6 5 4</strong> → Resposta correta: 1 letra
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="3A6KL" data-answer="3">
+                        <strong>3 A 6 K L</strong> → Resposta correta: 3 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="B904LT" data-answer="3">
+                        <strong>B 9 0 4 L T</strong> → Resposta correta: 3 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="3CP573" data-answer="2">
+                        <strong>3 C P 5 7 3</strong> → Resposta correta: 2 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="395L4ZA" data-answer="3">
+                        <strong>3 9 5 L 4 Z A</strong> → Resposta correta: 3 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="I1ASQ41" data-answer="4">
+                        <strong>I 1 A S Q 4 1</strong> → Resposta correta: 4 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="75DA4TB2" data-answer="4">
+                        <strong>7 5 D A 4 T B 2</strong> → Resposta correta: 4 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="968437LC" data-answer="2">
+                        <strong>9 6 8 4 3 7 L C</strong> → Resposta correta: 2 letras
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="Z49ATD384" data-answer="1">
+                        <strong>Z 4 9 A T D 3 8 4</strong> → Resposta correta: 1 letra
+                    </div>
+                    <div class="attention-item" onclick="toggleAttention(this)" data-sequence="95MD4SC3E" data-answer="5">
+                        <strong>9 5 M D 4 S C 3 E</strong> → Resposta correta: 5 letras
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Atenção Sustentada: <span id="attentionScore">0</span>/10</strong>
+                    </div>
+                </div>
+
+                <!-- 4. Memória Operacional -->
+                <div class="test-section">
+                    <h4>4. Memória Operacional (0-10 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nos itens que o paciente respondeu corretamente (números primeiro, depois letras).</p>
+                    
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="GM" data-answer="G M">
+                        <strong>G 8 M</strong> → Resposta correta: 8 G M
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="9I6" data-answer="9 6 I">
+                        <strong>9 I 6</strong> → Resposta correta: 9 6 I
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="3M" data-answer="3 M">
+                        <strong>3 M</strong> → Resposta correta: 3 M
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="7P" data-answer="7 P">
+                        <strong>7 P</strong> → Resposta correta: 7 P
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="M64NI" data-answer="6 4 M N I">
+                        <strong>M 6 4 N I</strong> → Resposta correta: 6 4 M N I
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="35SGC" data-answer="3 5 S G C">
+                        <strong>3 5 S G C</strong> → Resposta correta: 3 5 S G C
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="T04A" data-answer="0 4 T A">
+                        <strong>T 0 4 A</strong> → Resposta correta: 0 4 T A
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="7V6J" data-answer="7 6 V J">
+                        <strong>7 V 6 J</strong> → Resposta correta: 7 6 V J
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="1R9VB3" data-answer="1 9 3 R V B">
+                        <strong>1 R 9 V B 3</strong> → Resposta correta: 1 9 3 R V B
+                    </div>
+                    <div class="memory-item" onclick="toggleMemory(this)" data-sequence="M274Z9" data-answer="2 7 4 9 M Z">
+                        <strong>M 2 7 4 Z 9</strong> → Resposta correta: 2 7 4 9 M Z
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Memória Operacional: <span id="workingMemoryScore">0</span>/10</strong>
+                    </div>
+                </div>
+
+                <!-- 5. Desenho do Relógio - Interface Melhorada -->
+                <div class="test-section">
+                    <h4>5. Desenho do Relógio (Espontâneo) (0-10 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nos critérios que o paciente atendeu no desenho espontâneo do relógio.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock1')">
+                                <input class="form-check-input" type="checkbox" id="clock1" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock1">A figura parece um relógio</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock2')">
+                                <input class="form-check-input" type="checkbox" id="clock2" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock2">O relógio não é dividido por linhas ou setores</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock3')">
+                                <input class="form-check-input" type="checkbox" id="clock3" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock3">Há uma disposição simétrica dos números</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock4')">
+                                <input class="form-check-input" type="checkbox" id="clock4" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock4">Somente números de 1 a 12 estão escritos</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock5')">
+                                <input class="form-check-input" type="checkbox" id="clock5" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock5">Os números estão corretamente sequenciados</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock6')">
+                                <input class="form-check-input" type="checkbox" id="clock6" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock6">Somente dois ponteiros são desenhados</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock7')">
+                                <input class="form-check-input" type="checkbox" id="clock7" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock7">Os ponteiros são representados como setas</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock8')">
+                                <input class="form-check-input" type="checkbox" id="clock8" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock8">O ponteiro das horas é menor que o dos minutos</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock9')">
+                                <input class="form-check-input" type="checkbox" id="clock9" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock9">Nenhuma palavra foi escrita</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'clock10')">
+                                <input class="form-check-input" type="checkbox" id="clock10" onchange="updateClockScore()">
+                                <label class="form-check-label" for="clock10">O número "25" não foi desenhado</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Desenho do Relógio: <span id="clockDrawingScore">0</span>/10</strong>
+                    </div>
+                </div>
+
+                <!-- 6. Cópia do Relógio - Interface Melhorada -->
+                <div class="test-section">
+                    <h4>6. Cópia do Desenho do Relógio (0-10 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nos critérios que o paciente atendeu na cópia do relógio.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy1')">
+                                <input class="form-check-input" type="checkbox" id="copy1" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy1">A figura parece um relógio</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy2')">
+                                <input class="form-check-input" type="checkbox" id="copy2" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy2">O relógio não é dividido por linhas ou setores</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy3')">
+                                <input class="form-check-input" type="checkbox" id="copy3" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy3">Há uma disposição simétrica dos números</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy4')">
+                                <input class="form-check-input" type="checkbox" id="copy4" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy4">Somente números de 1 a 12 estão escritos</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy5')">
+                                <input class="form-check-input" type="checkbox" id="copy5" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy5">Os números estão corretamente sequenciados</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy6')">
+                                <input class="form-check-input" type="checkbox" id="copy6" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy6">Somente dois ponteiros são desenhados</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy7')">
+                                <input class="form-check-input" type="checkbox" id="copy7" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy7">Os ponteiros são representados como setas</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy8')">
+                                <input class="form-check-input" type="checkbox" id="copy8" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy8">O ponteiro das horas é menor que o dos minutos</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy9')">
+                                <input class="form-check-input" type="checkbox" id="copy9" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy9">Nenhuma palavra foi escrita</label>
+                            </div>
+                            <div class="clock-checkbox-item" onclick="toggleClockItem(this, 'copy10')">
+                                <input class="form-check-input" type="checkbox" id="copy10" onchange="updateCopyScore()">
+                                <label class="form-check-label" for="copy10">O número "25" não foi desenhado</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Cópia do Relógio: <span id="clockCopyScore">0</span>/10</strong>
+                    </div>
+                </div>
+
+                <!-- 7. Memória Verbal Tardia -->
+                <div class="test-section" id="delayedMemorySection">
+                    <h4>7. Memória Verbal de Evocação Livre Tardia (0-12 pontos)</h4>
+                    <p><strong>Instruções:</strong> Clique nas palavras que o paciente lembrou da lista inicial.</p>
+                    
+                    <div class="word-grid" id="delayedMemoryGrid">
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="luz">LUZ</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="seda">SEDA</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="areia">AREIA</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="cilio">CÍLIO</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="arroz">ARROZ</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="gravata">GRAVATA</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="quadro">QUADRO</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="bicicleta">BICICLETA</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="estrela">ESTRELA</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="leao">LEÃO</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="anel">ANEL</div>
+                        <div class="word-item" onclick="toggleDelayed(this)" data-word="perfume">PERFUME</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Memória Tardia: <span id="delayedMemoryScore">0</span>/12</strong>
+                    </div>
+                </div>
+
+                <!-- 8. Fluência Verbal Alternada -->
+                <div class="test-section">
+                    <h4>8. Fluência Verbal Alternada (0-20 pontos)</h4>
+                    <p><strong>Instruções:</strong> Conte o número de respostas corretas que mantiveram a alternância entre palavras com 'S' e itens de vestuário.</p>
+                    
+                    <div class="fluency-counter">
+                        <label for="alternatedFluency" class="form-label">Número de respostas corretas alternadas:</label>
+                        <input type="number" class="form-control" id="alternatedFluency" min="0" max="20" style="width: 100px;" onchange="updateAlternatedFluency()">
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Fluência Alternada: <span id="alternatedFluencyScore">0</span>/20</strong>
+                    </div>
+                </div>
+
+                <!-- 9. Fluência Verbal de Ações -->
+                <div class="test-section">
+                    <h4>9. Fluência Verbal de Ações (0-30 pontos)</h4>
+                    <p><strong>Instruções:</strong> Conte o número de ações (verbos) que o paciente disse corretamente.</p>
+                    
+                    <div class="fluency-counter">
+                        <label for="actionFluency" class="form-label">Número de ações corretas:</label>
+                        <input type="number" class="form-control" id="actionFluency" min="0" max="30" style="width: 100px;" onchange="updateActionFluency()">
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Pontuação Fluência de Ações: <span id="actionFluencyScore">0</span>/30</strong>
+                    </div>
+                </div>
+
+                <!-- Resultados -->
+                <div class="results-section">
+                    <h3 class="text-center mb-4">Resultados da Avaliação</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4>Escore Frontal-Subcortical</h4>
+                                <div class="display-4" id="frontalScore">0</div>
+                                <small>/104 pontos</small>
+                                <div class="mt-2">
+                                    <span class="percentile-badge bg-primary" id="frontalPercentile">Percentil: --</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4>Escore Cortical Posterior</h4>
+                                <div class="display-4" id="posteriorScore">0</div>
+                                <small>/30 pontos</small>
+                                <div class="mt-2">
+                                    <span class="percentile-badge bg-success" id="posteriorPercentile">Percentil: --</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4>Escore Total PD-CRS</h4>
+                                <div class="display-2 font-weight-bold" id="totalScore">0</div>
+                                <small>/134 pontos</small>
+                                <div class="mt-2">
+                                    <span class="percentile-badge bg-warning text-dark" id="totalPercentile">Percentil: --</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Escores Normativos Ajustados:</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Z-Score Total:</strong> <span id="zScore">--</span></p>
+                                    <p><strong>T-Score Total:</strong> <span id="tScore">--</span></p>
+                                    <p><strong>Classificação AACN:</strong> <span id="classification">--</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Orientação Clínica:</strong> <span id="clinicalGuidance">--</span></p>
+                                    <p><strong>Interpretação Geral:</strong> <span id="generalInterpretation">--</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Detalhamento por Subteste:</h5>
+                            
+                            <!-- Legenda de cores -->
+                            <div class="alert alert-info mb-3">
+                                <h6><i class="fas fa-info-circle"></i> <strong>Legenda de Cores:</strong></h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Desempenho Preservado/Superior:</strong></p>
+                                        <span class="badge score-exceptionally-high me-2">Excepcionalmente Superior</span>
+                                        <span class="badge score-above-average me-2">Acima da Média</span>
+                                        <span class="badge score-high-average me-2">Média Superior</span>
+                                        <span class="badge score-average me-2">Média</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Desempenho Comprometido/Deficitário:</strong></p>
+                                        <span class="badge score-low-average me-2">Média Inferior</span>
+                                        <span class="badge score-below-average me-2">Abaixo da Média</span>
+                                        <span class="badge score-exceptionally-low me-2">Excepcionalmente Inferior</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-dark table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Subteste</th>
+                                            <th>Escore Bruto</th>
+                                            <th>Escore Predito</th>
+                                            <th>Z-Score</th>
+                                            <th>Percentil</th>
+                                            <th>Classificação AACN</th>
+                                            <th>Interpretação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="subtestResults">
+                                        <!-- Os resultados detalhados serão inseridos aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="text-center py-4">
+                    <button class="btn btn-primary btn-lg me-3" onclick="generateReport()">Gerar Relatório PDF</button>
+                    <button class="btn btn-success btn-lg me-3" onclick="exportCSV()">Exportar CSV</button>
+                    <button class="btn btn-secondary btn-lg me-3" onclick="resetForm()">Limpar Formulário</button>
+                    <button class="btn btn-info btn-lg" onclick="printResults()">Imprimir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // Variáveis globais para armazenar pontuações
+        let scores = {
+            immediateMemory: 0,
+            naming: 0,
+            attention: 0,
+            workingMemory: 0,
+            clockDrawing: 0,
+            clockCopy: 0,
+            delayedMemory: 0,
+            alternatedFluency: 0,
+            actionFluency: 0
+        };
+
+        let memoryTrials = [0, 0, 0];
+
+        // Nova função para toggle de itens do relógio
+        function toggleClockItem(container, checkboxId) {
+            const checkbox = document.getElementById(checkboxId);
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                container.classList.toggle('selected', checkbox.checked);
+                
+                // Chamar a função de atualização apropriada
+                if (checkboxId.startsWith('clock')) {
+                    updateClockScore();
+                } else if (checkboxId.startsWith('copy')) {
+                    updateCopyScore();
+                }
+            }
+        }
+
+        // Funções para toggle de seleção
+        function toggleWord(element, trial) {
+            element.classList.toggle('selected');
+            updateMemoryScore(trial);
+        }
+
+        function toggleNaming(element) {
+            element.classList.toggle('selected');
+            updateNamingScore();
+        }
+
+        function toggleAttention(element) {
+            element.classList.toggle('selected');
+            updateAttentionScore();
+        }
+
+        function toggleMemory(element) {
+            element.classList.toggle('selected');
+            updateWorkingMemoryScore();
+        }
+
+        function toggleDelayed(element) {
+            element.classList.toggle('selected');
+            updateDelayedMemoryScore();
+        }
+
+        // Funções de atualização de pontuação
+        function updateMemoryScore(trial) {
+            const trialIndex = parseInt(trial.slice(-1)) - 1;
+            const container = document.getElementById(`memory${trialIndex + 1}`);
+            if (!container) return;
+            
+            const selectedWords = container.querySelectorAll('.word-item.selected');
+            memoryTrials[trialIndex] = selectedWords.length;
+            
+            document.getElementById(`score${trialIndex + 1}`).textContent = memoryTrials[trialIndex];
+            
+            scores.immediateMemory = Math.max(...memoryTrials);
+            document.getElementById('immediateMemoryScore').textContent = scores.immediateMemory;
+            
+            calculateScores();
+        }
+
+        function updateNamingScore() {
+            const container = document.querySelector('.naming-grid');
+            if (!container) return;
+            
+            const selectedItems = container.querySelectorAll('.word-item.selected').length;
+            scores.naming = selectedItems;
+            document.getElementById('namingScore').textContent = scores.naming;
+            calculateScores();
+        }
+
+        function updateAttentionScore() {
+            const selectedItems = document.querySelectorAll('.attention-item.selected').length;
+            scores.attention = selectedItems;
+            document.getElementById('attentionScore').textContent = scores.attention;
+            calculateScores();
+        }
+
+        function updateWorkingMemoryScore() {
+            const selectedItems = document.querySelectorAll('.memory-item.selected').length;
+            scores.workingMemory = selectedItems;
+            document.getElementById('workingMemoryScore').textContent = scores.workingMemory;
+            calculateScores();
+        }
+
+        function updateClockScore() {
+            let clockScore = 0;
+            for (let i = 1; i <= 10; i++) {
+                const checkbox = document.getElementById(`clock${i}`);
+                if (checkbox && checkbox.checked) {
+                    clockScore++;
+                }
+            }
+            scores.clockDrawing = clockScore;
+            document.getElementById('clockDrawingScore').textContent = scores.clockDrawing;
+            calculateScores();
+        }
+
+        function updateCopyScore() {
+            let copyScore = 0;
+            for (let i = 1; i <= 10; i++) {
+                const checkbox = document.getElementById(`copy${i}`);
+                if (checkbox && checkbox.checked) {
+                    copyScore++;
+                }
+            }
+            scores.clockCopy = copyScore;
+            document.getElementById('clockCopyScore').textContent = scores.clockCopy;
+            calculateScores();
+        }
+
+        function updateDelayedMemoryScore() {
+            const delayedContainer = document.getElementById('delayedMemoryGrid');
+            if (!delayedContainer) return;
+            
+            const selectedWords = delayedContainer.querySelectorAll('.word-item.selected').length;
+            scores.delayedMemory = selectedWords;
+            document.getElementById('delayedMemoryScore').textContent = scores.delayedMemory;
+            calculateScores();
+        }
+
+        function updateAlternatedFluency() {
+            const input = document.getElementById('alternatedFluency');
+            if (!input) return;
+            
+            const value = parseInt(input.value) || 0;
+            scores.alternatedFluency = Math.min(Math.max(value, 0), 20);
+            document.getElementById('alternatedFluencyScore').textContent = scores.alternatedFluency;
+            calculateScores();
+        }
+
+        function updateActionFluency() {
+            const input = document.getElementById('actionFluency');
+            if (!input) return;
+            
+            const value = parseInt(input.value) || 0;
+            scores.actionFluency = Math.min(Math.max(value, 0), 30);
+            document.getElementById('actionFluencyScore').textContent = scores.actionFluency;
+            calculateScores();
+        }
+
+        // Função para exportar CSV
+        function exportCSV() {
+            const patientName = document.getElementById('patientName').value || 'Nao_informado';
+            const age = document.getElementById('age').value || '';
+            const education = document.getElementById('education').value || '';
+            const sex = document.getElementById('sex').value;
+            const sexText = sex === '1' ? 'Feminino' : sex === '0' ? 'Masculino' : '';
+            
+            const frontalScore = parseInt(document.getElementById('frontalScore').textContent);
+            const posteriorScore = parseInt(document.getElementById('posteriorScore').textContent);
+            const totalScore = parseInt(document.getElementById('totalScore').textContent);
+            
+            const zScore = document.getElementById('zScore').textContent;
+            const tScore = document.getElementById('tScore').textContent;
+            const classification = document.getElementById('classification').textContent;
+            const clinicalGuidance = document.getElementById('clinicalGuidance').textContent;
+            const generalInterpretation = document.getElementById('generalInterpretation').textContent;
+            
+            // Calcular escores preditos e z-scores por subteste se há dados demográficos
+            let predicted = null;
+            let subtestZScores = {};
+            let subtestPercentiles = {};
+            let subtestClassifications = {};
+            
+            if (age && education !== '' && sex !== '') {
+                const ageNum = parseInt(age);
+                const educationNum = parseInt(education);
+                const sexNum = parseInt(sex);
+                
+                predicted = calculatePredictedScores(ageNum, educationNum, sexNum);
+                
+                const subtests = [
+                    {name: 'MemoriaImediata', raw: scores.immediateMemory, predicted: predicted.immediateMemory, rmse: rmseValues.immediateMemory},
+                    {name: 'Nomeacao', raw: scores.naming, predicted: predicted.naming, rmse: rmseValues.naming},
+                    {name: 'AtencaoSustentada', raw: scores.attention, predicted: predicted.attention, rmse: rmseValues.attention},
+                    {name: 'MemoriaOperacional', raw: scores.workingMemory, predicted: predicted.workingMemory, rmse: rmseValues.workingMemory},
+                    {name: 'DesenhoRelogio', raw: scores.clockDrawing, predicted: predicted.clockDrawing, rmse: rmseValues.clockDrawing},
+                    {name: 'CopiaRelogio', raw: scores.clockCopy, predicted: predicted.clockCopy, rmse: rmseValues.clockCopy},
+                    {name: 'MemoriaTardia', raw: scores.delayedMemory, predicted: predicted.delayedMemory, rmse: rmseValues.delayedMemory},
+                    {name: 'FluenciaAlternada', raw: scores.alternatedFluency, predicted: predicted.alternatedFluency, rmse: rmseValues.alternatedFluency},
+                    {name: 'FluenciaAcoes', raw: scores.actionFluency, predicted: predicted.actionFluency, rmse: rmseValues.actionFluency}
+                ];
+                
+                subtests.forEach(subtest => {
+                    const subtestZ = (subtest.raw - subtest.predicted) / subtest.rmse;
+                    const subtestPercentile = zScoreToPercentile(subtestZ);
+                    const subtestClassification = getScoreClassification(subtestPercentile);
+                    
+                    subtestZScores[subtest.name] = subtestZ.toFixed(2);
+                    subtestPercentiles[subtest.name] = subtestPercentile;
+                    subtestClassifications[subtest.name] = subtestClassification.label;
+                });
+            }
+            
+            // Criar cabeçalho do CSV
+            const headers = [
+                'DataAvaliacao',
+                'NomePaciente',
+                'Idade',
+                'Escolaridade',
+                'Sexo',
+                'MemoriaImediata_Bruto',
+                'Nomeacao_Bruto',
+                'AtencaoSustentada_Bruto',
+                'MemoriaOperacional_Bruto',
+                'DesenhoRelogio_Bruto',
+                'CopiaRelogio_Bruto',
+                'MemoriaTardia_Bruto',
+                'FluenciaAlternada_Bruto',
+                'FluenciaAcoes_Bruto',
+                'EscoreFrontal',
+                'EscorePosterior',
+                'EscoreTotal',
+                'ZScore_Total',
+                'TScore_Total',
+                'ClassificacaoAACN',
+                'OrientacaoClinica',
+                'InterpretacaoGeral'
+            ];
+            
+            // Adicionar cabeçalhos para subtestes se há dados normativos
+            if (predicted) {
+                const subtestNames = ['MemoriaImediata', 'Nomeacao', 'AtencaoSustentada', 'MemoriaOperacional', 
+                                   'DesenhoRelogio', 'CopiaRelogio', 'MemoriaTardia', 'FluenciaAlternada', 'FluenciaAcoes'];
+                
+                subtestNames.forEach(name => {
+                    headers.push(`${name}_Predito`);
+                    headers.push(`${name}_ZScore`);
+                    headers.push(`${name}_Percentil`);
+                    headers.push(`${name}_Classificacao`);
+                });
+            }
+            
+            // Criar linha de dados
+            const data = [
+                new Date().toLocaleDateString('pt-BR'),
+                `"${patientName.replace(/"/g, '""')}"`, // Escapar aspas no nome
+                age,
+                education,
+                sexText,
+                scores.immediateMemory,
+                scores.naming,
+                scores.attention,
+                scores.workingMemory,
+                scores.clockDrawing,
+                scores.clockCopy,
+                scores.delayedMemory,
+                scores.alternatedFluency,
+                scores.actionFluency,
+                frontalScore,
+                posteriorScore,
+                totalScore,
+                zScore,
+                tScore,
+                `"${classification.replace(/"/g, '""')}"`,
+                `"${clinicalGuidance.replace(/"/g, '""')}"`,
+                `"${generalInterpretation.replace(/"/g, '""')}"`
+            ];
+            
+            // Adicionar dados de subtestes se disponíveis
+            if (predicted) {
+                const subtestNames = ['MemoriaImediata', 'Nomeacao', 'AtencaoSustentada', 'MemoriaOperacional', 
+                                   'DesenhoRelogio', 'CopiaRelogio', 'MemoriaTardia', 'FluenciaAlternada', 'FluenciaAcoes'];
+                
+                const predictedValues = [
+                    predicted.immediateMemory, predicted.naming, predicted.attention, predicted.workingMemory,
+                    predicted.clockDrawing, predicted.clockCopy, predicted.delayedMemory, 
+                    predicted.alternatedFluency, predicted.actionFluency
+                ];
+                
+                subtestNames.forEach((name, index) => {
+                    data.push(predictedValues[index].toFixed(2));
+                    data.push(subtestZScores[name] || '');
+                    data.push(subtestPercentiles[name] || '');
+                    data.push(`"${(subtestClassifications[name] || '').replace(/"/g, '""')}"`);
+                });
+            }
+            
+            // Criar conteúdo CSV
+            const csvContent = headers.join(',') + '\n' + data.join(',');
+            
+            // Criar e baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            
+            const fileName = `PD-CRS_${patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Funções para classificação baseadas no consenso da AACN
+        function getScoreClassification(percentile) {
+            if (percentile > 98) return { label: 'Excepcionalmente Superior', class: 'score-exceptionally-high' };
+            else if (percentile >= 91) return { label: 'Acima da Média', class: 'score-above-average' };
+            else if (percentile >= 75) return { label: 'Média Superior', class: 'score-high-average' };
+            else if (percentile >= 25) return { label: 'Média', class: 'score-average' };
+            else if (percentile >= 9) return { label: 'Média Inferior', class: 'score-low-average' };
+            else if (percentile >= 2) return { label: 'Abaixo da Média', class: 'score-below-average' };
+            else return { label: 'Excepcionalmente Inferior', class: 'score-exceptionally-low' };
+        }
+
+        function getImpairmentInterpretation(zScore, percentile) {
+            if (zScore <= -2.0) return { 
+                text: 'Significativamente Comprometido', 
+                detail: 'Sugere déficit neuropsicológico',
+                class: 'score-exceptionally-low'
+            };
+            else if (zScore <= -1.5) return { 
+                text: 'Limítrofe/Comprometido', 
+                detail: 'Possível déficit, avaliar contexto',
+                class: 'score-below-average'
+            };
+            else if (zScore <= -1.0) return { 
+                text: 'Abaixo do Esperado', 
+                detail: 'Monitoramento recomendado',
+                class: 'score-low-average'
+            };
+            else if (zScore >= 1.5) return { 
+                text: 'Superior', 
+                detail: 'Desempenho excepcional',
+                class: 'score-exceptionally-high'
+            };
+            else if (zScore >= 0.5) return { 
+                text: 'Acima da Média', 
+                detail: 'Bom desempenho',
+                class: 'score-high-average'
+            };
+            else return { 
+                text: 'Dentro da Normalidade', 
+                detail: 'Desempenho preservado',
+                class: 'score-average'
+            };
+        }
+
+        function calculatePredictedScores(age, education, sex) {
+            const ageCentered = age - 58.9;
+            const ageSquared = age * age;
+            const educSqrt = Math.sqrt(education);
+            
+            return {
+                immediateMemory: 10.816 + (0.0561 * ageCentered) - (0.0009 * ageSquared) + (0.1643 * education),
+                naming: 12.044 - (0.0002 * ageSquared) + (1.338 * educSqrt),
+                attention: 5.4178 - (0.0002 * ageSquared) + (0.945 * educSqrt),
+                workingMemory: 2.799 - (0.0282 * ageCentered) + (0.9186 * educSqrt),
+                clockDrawing: 5.6848 - (0.0196 * ageCentered) + (0.7315 * educSqrt),
+                clockCopy: 8.11 - (0.0138 * ageCentered) + (0.3906 * educSqrt),
+                delayedMemory: 7.44 + (0.0787 * ageCentered) - (0.0012 * ageSquared) + (0.1818 * education) + (0.5863 * sex),
+                alternatedFluency: 6.444 - (0.0005 * ageSquared) + (1.5205 * educSqrt),
+                actionFluency: 8.962 - (0.0004 * ageSquared) + (0.4709 * education),
+                frontalSubcortical: 35.822 - (0.0024 * ageSquared) + (9.213 * educSqrt),
+                posteriorCortical: 20.496 - (0.0003 * ageSquared) + (1.773 * educSqrt),
+                total: 55.766 - (0.0028 * ageSquared) + (11.152 * educSqrt)
+            };
+        }
+
+        // RMSEs das regressões para cálculo dos z-scores
+        const rmseValues = {
+            immediateMemory: 1.932,
+            naming: 2.963,
+            attention: 2.023,
+            workingMemory: 1.912,
+            clockDrawing: 1.789,
+            clockCopy: 0.798,
+            delayedMemory: 2.207,
+            alternatedFluency: 3.575,
+            actionFluency: 4.374,
+            frontalSubcortical: 11.21,
+            posteriorCortical: 3.259,
+            total: 13.15
+        };
+
+        function calculateScores() {
+            const ageInput = document.getElementById('age');
+            const educationInput = document.getElementById('education');
+            const sexInput = document.getElementById('sex');
+            
+            if (!ageInput || !educationInput || !sexInput) return;
+            
+            const age = parseInt(ageInput.value);
+            const education = parseInt(educationInput.value);
+            const sex = parseInt(sexInput.value);
+
+            // Calcular escores compostos independentemente dos dados demográficos
+            const frontalScore = scores.immediateMemory + scores.attention + scores.workingMemory + 
+                               scores.clockDrawing + scores.delayedMemory + scores.alternatedFluency + 
+                               scores.actionFluency;
+            
+            const posteriorScore = scores.naming + scores.clockCopy;
+            const totalScore = frontalScore + posteriorScore;
+
+            // Atualizar exibição dos escores sempre
+            document.getElementById('frontalScore').textContent = frontalScore;
+            document.getElementById('posteriorScore').textContent = posteriorScore;
+            document.getElementById('totalScore').textContent = totalScore;
+
+            // Se não temos dados demográficos completos, parar aqui
+            if (!age || education === '' || sex === '' || isNaN(age) || isNaN(education) || isNaN(sex)) {
+                document.getElementById('zScore').textContent = '--';
+                document.getElementById('tScore').textContent = '--';
+                document.getElementById('totalPercentile').textContent = 'Percentil: --';
+                document.getElementById('frontalPercentile').textContent = 'Percentil: --';
+                document.getElementById('posteriorPercentile').textContent = 'Percentil: --';
+                document.getElementById('classification').textContent = '--';
+                document.getElementById('clinicalGuidance').textContent = '--';
+                document.getElementById('generalInterpretation').textContent = 'Insira dados demográficos para análise normativa';
+                
+                document.getElementById('subtestResults').innerHTML = '';
+                return;
+            }
+
+            // Calcular escores preditos
+            const predicted = calculatePredictedScores(age, education, sex);
+
+            // Calcular z-scores
+            const zScores = {
+                total: (totalScore - predicted.total) / rmseValues.total,
+                frontal: (frontalScore - predicted.frontalSubcortical) / rmseValues.frontalSubcortical,
+                posterior: (posteriorScore - predicted.posteriorCortical) / rmseValues.posteriorCortical
+            };
+
+            // Calcular T-scores (média 50, DP 10)
+            const tScores = {
+                total: 50 + (zScores.total * 10),
+                frontal: 50 + (zScores.frontal * 10),
+                posterior: 50 + (zScores.posterior * 10)
+            };
+
+            // Calcular percentis
+            const percentiles = {
+                total: zScoreToPercentile(zScores.total),
+                frontal: zScoreToPercentile(zScores.frontal),
+                posterior: zScoreToPercentile(zScores.posterior)
+            };
+
+            // Atualizar exibição
+            document.getElementById('zScore').textContent = zScores.total.toFixed(2);
+            document.getElementById('tScore').textContent = tScores.total.toFixed(1);
+            document.getElementById('totalPercentile').textContent = `Percentil: ${percentiles.total}`;
+            document.getElementById('frontalPercentile').textContent = `Percentil: ${percentiles.frontal}`;
+            document.getElementById('posteriorPercentile').textContent = `Percentil: ${percentiles.posterior}`;
+
+            // Classificação baseada no consenso AACN
+            let classification = '';
+            let clinicalGuidance = '';
+            
+            if (zScores.total >= 1.5) {
+                classification = 'Superior (Exceptionally High)';
+                clinicalGuidance = 'Desempenho excepcional, acima do percentil 98';
+            } else if (zScores.total >= 0.5) {
+                classification = 'Acima da Média (High Average)';
+                clinicalGuidance = 'Bom desempenho cognitivo';
+            } else if (zScores.total >= -0.5) {
+                classification = 'Médio (Average)';
+                clinicalGuidance = 'Desempenho dentro da normalidade';
+            } else if (zScores.total >= -1.0) {
+                classification = 'Abaixo do Esperado (Low Average)';
+                clinicalGuidance = 'Monitoramento recomendado';
+            } else if (zScores.total >= -1.5) {
+                classification = 'Limítrofe (Below Average)';
+                clinicalGuidance = 'Possível déficit, avaliar contexto clínico';
+            } else if (zScores.total >= -2.0) {
+                classification = 'Comprometido (Exceptionally Low)';
+                clinicalGuidance = 'Sugere déficit neuropsicológico significativo';
+            } else {
+                classification = 'Severamente Comprometido';
+                clinicalGuidance = 'Déficit neuropsicológico severo';
+            }
+
+            document.getElementById('classification').textContent = classification;
+            document.getElementById('clinicalGuidance').textContent = clinicalGuidance;
+
+            // Interpretação geral baseada na classificação AACN
+            let generalInterpretation = '';
+            if (zScores.total >= 1.5) {
+                generalInterpretation = 'Funcionamento cognitivo excepcional, muito acima da média populacional';
+            } else if (zScores.total >= 0.5) {
+                generalInterpretation = 'Funcionamento cognitivo preservado, acima da média';
+            } else if (zScores.total >= -0.5) {
+                generalInterpretation = 'Funcionamento cognitivo dentro dos limites esperados';
+            } else if (zScores.total >= -1.0) {
+                generalInterpretation = 'Funcionamento cognitivo no limite inferior da normalidade';
+            } else if (zScores.total >= -1.5) {
+                generalInterpretation = 'Funcionamento cognitivo abaixo do esperado, requer avaliação adicional';
+            } else {
+                generalInterpretation = 'Funcionamento cognitivo significativamente comprometido';
+            }
+            
+            document.getElementById('generalInterpretation').textContent = generalInterpretation;
+
+            // Preencher tabela detalhada
+            updateSubtestTable(predicted, zScores);
+        }
+
+        function zScoreToPercentile(zScore) {
+            // Aproximação da função de distribuição normal cumulativa
+            const t = 1 / (1 + 0.2316419 * Math.abs(zScore));
+            const d = 0.3989423 * Math.exp(-zScore * zScore / 2);
+            let prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            
+            if (zScore > 0) prob = 1 - prob;
+            
+            return Math.round(prob * 100);
+        }
+
+        function updateSubtestTable(predicted, zScores) {
+            const subtests = [
+                {name: 'Memória Verbal Imediata', raw: scores.immediateMemory, predicted: predicted.immediateMemory, max: 12, rmse: rmseValues.immediateMemory},
+                {name: 'Nomeação', raw: scores.naming, predicted: predicted.naming, max: 20, rmse: rmseValues.naming},
+                {name: 'Atenção Sustentada', raw: scores.attention, predicted: predicted.attention, max: 10, rmse: rmseValues.attention},
+                {name: 'Memória Operacional', raw: scores.workingMemory, predicted: predicted.workingMemory, max: 10, rmse: rmseValues.workingMemory},
+                {name: 'Desenho do Relógio', raw: scores.clockDrawing, predicted: predicted.clockDrawing, max: 10, rmse: rmseValues.clockDrawing},
+                {name: 'Cópia do Relógio', raw: scores.clockCopy, predicted: predicted.clockCopy, max: 10, rmse: rmseValues.clockCopy},
+                {name: 'Memória Verbal Tardia', raw: scores.delayedMemory, predicted: predicted.delayedMemory, max: 12, rmse: rmseValues.delayedMemory},
+                {name: 'Fluência Alternada', raw: scores.alternatedFluency, predicted: predicted.alternatedFluency, max: 20, rmse: rmseValues.alternatedFluency},
+                {name: 'Fluência de Ações', raw: scores.actionFluency, predicted: predicted.actionFluency, max: 30, rmse: rmseValues.actionFluency}
+            ];
+
+            const tbody = document.getElementById('subtestResults');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            subtests.forEach(subtest => {
+                const zScore = (subtest.raw - subtest.predicted) / subtest.rmse;
+                const percentile = zScoreToPercentile(zScore);
+                const classification = getScoreClassification(percentile);
+                const interpretation = getImpairmentInterpretation(zScore, percentile);
+                
+                const row = tbody.insertRow();
+                row.className = classification.class;
+                row.innerHTML = `
+                    <td><strong>${subtest.name}</strong></td>
+                    <td>${subtest.raw}/${subtest.max}</td>
+                    <td>${subtest.predicted.toFixed(1)}</td>
+                    <td>${zScore.toFixed(2)}</td>
+                    <td>${percentile}</td>
+                    <td><strong>${classification.label}</strong></td>
+                    <td>${interpretation.text}</td>
+                `;
+            });
+        }
+
+        function generateReport() {
+            const patientName = document.getElementById('patientName').value || 'Não informado';
+            const age = document.getElementById('age').value || 'Não informado';
+            const education = document.getElementById('education').value || 'Não informado';
+            const sex = document.getElementById('sex').value === '1' ? 'Feminino' : 
+                       document.getElementById('sex').value === '0' ? 'Masculino' : 'Não informado';
+            
+            const totalScore = parseInt(document.getElementById('totalScore').textContent);
+            const frontalScore = parseInt(document.getElementById('frontalScore').textContent);
+            const posteriorScore = parseInt(document.getElementById('posteriorScore').textContent);
+            
+            const zScore = document.getElementById('zScore').textContent;
+            const tScore = document.getElementById('tScore').textContent;
+            const classification = document.getElementById('classification').textContent;
+            const clinicalGuidance = document.getElementById('clinicalGuidance').textContent;
+            const generalInterpretation = document.getElementById('generalInterpretation').textContent;
+
+            // Verificar se jsPDF está disponível
+            if (typeof window.jspdf === 'undefined') {
+                alert('Erro: Biblioteca jsPDF não carregada. Verifique a conexão com a internet.');
+                return;
+            }
+
+            // Criar PDF usando jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Configuração da fonte
+            doc.setFont("helvetica");
+            
+            // Título
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("RELATÓRIO PD-CRS", 20, 20);
+            doc.setFontSize(12);
+            doc.text("Escala de Avaliação Cognitiva da Doença de Parkinson", 20, 30);
+            
+            // Linha divisória
+            doc.line(20, 35, 190, 35);
+            
+            // Dados do paciente
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("DADOS DO PACIENTE:", 20, 45);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.text(`Nome: ${patientName}`, 20, 55);
+            doc.text(`Idade: ${age} anos`, 20, 62);
+            doc.text(`Escolaridade: ${education} anos`, 20, 69);
+            doc.text(`Sexo: ${sex}`, 20, 76);
+            doc.text(`Data da Avaliação: ${new Date().toLocaleDateString('pt-BR')}`, 20, 83);
+            
+            // Resultados principais
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("RESULTADOS PRINCIPAIS:", 20, 100);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.text(`Escore Frontal-Subcortical: ${frontalScore}/104`, 20, 110);
+            doc.text(`Escore Cortical Posterior: ${posteriorScore}/30`, 20, 117);
+            doc.text(`Escore Total PD-CRS: ${totalScore}/134`, 20, 124);
+            
+            if (zScore !== '--') {
+                doc.text(`Z-Score Total: ${zScore}`, 20, 131);
+                doc.text(`T-Score Total: ${tScore}`, 20, 138);
+                doc.text(`Classificação AACN: ${classification}`, 20, 145);
+                doc.text(`Orientação Clínica: ${clinicalGuidance}`, 20, 152);
+            }
+            
+            doc.text(`Interpretação Geral: ${generalInterpretation}`, 20, 159);
+            
+            // Detalhamento por subteste
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("DETALHAMENTO POR SUBTESTE:", 20, 177);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            
+            const subtestData = [
+                `1. Memória Verbal Imediata: ${scores.immediateMemory}/12`,
+                `2. Nomeação por Confronto Visual: ${scores.naming}/20`,
+                `3. Atenção Sustentada: ${scores.attention}/10`,
+                `4. Memória Operacional: ${scores.workingMemory}/10`,
+                `5. Desenho do Relógio: ${scores.clockDrawing}/10`,
+                `6. Cópia do Relógio: ${scores.clockCopy}/10`,
+                `7. Memória Verbal Tardia: ${scores.delayedMemory}/12`,
+                `8. Fluência Verbal Alternada: ${scores.alternatedFluency}/20`,
+                `9. Fluência Verbal de Ações: ${scores.actionFluency}/30`
+            ];
+            
+            let yPosition = 187;
+            subtestData.forEach(item => {
+                doc.text(item, 20, yPosition);
+                yPosition += 7;
+            });
+
+            // Análise detalhada por subteste (se há dados normativos)
+            if (zScore !== '--') {
+                const ageNum = parseInt(document.getElementById('age').value);
+                const educationNum = parseInt(document.getElementById('education').value);
+                const sexNum = parseInt(document.getElementById('sex').value);
+                
+                if (!isNaN(ageNum) && !isNaN(educationNum) && !isNaN(sexNum)) {
+                    const predicted = calculatePredictedScores(ageNum, educationNum, sexNum);
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(12);
+                    doc.text("ANÁLISE NORMATIVA DETALHADA:", 20, yPosition + 10);
+                    yPosition += 20;
+
+                    const subtests = [
+                        {name: 'Memória Verbal Imediata', raw: scores.immediateMemory, predicted: predicted.immediateMemory, rmse: rmseValues.immediateMemory},
+                        {name: 'Nomeação', raw: scores.naming, predicted: predicted.naming, rmse: rmseValues.naming},
+                        {name: 'Atenção Sustentada', raw: scores.attention, predicted: predicted.attention, rmse: rmseValues.attention},
+                        {name: 'Memória Operacional', raw: scores.workingMemory, predicted: predicted.workingMemory, rmse: rmseValues.workingMemory},
+                        {name: 'Desenho do Relógio', raw: scores.clockDrawing, predicted: predicted.clockDrawing, rmse: rmseValues.clockDrawing},
+                        {name: 'Cópia do Relógio', raw: scores.clockCopy, predicted: predicted.clockCopy, rmse: rmseValues.clockCopy},
+                        {name: 'Memória Verbal Tardia', raw: scores.delayedMemory, predicted: predicted.delayedMemory, rmse: rmseValues.delayedMemory},
+                        {name: 'Fluência Alternada', raw: scores.alternatedFluency, predicted: predicted.alternatedFluency, rmse: rmseValues.alternatedFluency},
+                        {name: 'Fluência de Ações', raw: scores.actionFluency, predicted: predicted.actionFluency, rmse: rmseValues.actionFluency}
+                    ];
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(9);
+
+                    subtests.forEach(subtest => {
+                        const subtestZ = (subtest.raw - subtest.predicted) / subtest.rmse;
+                        const subtestPercentile = zScoreToPercentile(subtestZ);
+                        const interpretation = getImpairmentInterpretation(subtestZ, subtestPercentile);
+                        
+                        if (yPosition > 260) {
+                            doc.addPage();
+                            yPosition = 20;
+                        }
+                        
+                        doc.text(`${subtest.name}: Z=${subtestZ.toFixed(2)}, P=${subtestPercentile}, ${interpretation.text}`, 20, yPosition);
+                        yPosition += 6;
+                    });
+                }
+            }
+            
+            // Interpretação clínica
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text("INTERPRETAÇÃO CLÍNICA:", 20, yPosition + 10);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            yPosition += 20;
+            
+            // Interpretação baseada na classificação AACN
+            if (zScore !== '--') {
+                const zScoreNum = parseFloat(zScore);
+                if (zScoreNum <= -1.5) {
+                    doc.text("• Escores com Z ≤ -1.5 sugerem comprometimento significativo conforme", 20, yPosition);
+                    yPosition += 7;
+                    doc.text("  critérios da AACN (American Academy of Clinical Neuropsychology).", 20, yPosition);
+                    yPosition += 7;
+                    doc.text("• Recomenda-se avaliação neuropsicológica completa e", 20, yPosition);
+                    yPosition += 7;
+                    doc.text("  acompanhamento clínico especializado.", 20, yPosition);
+                } else if (zScoreNum <= -1.0) {
+                    doc.text("• Funcionamento cognitivo no limite inferior da normalidade.", 20, yPosition);
+                    yPosition += 7;
+                    doc.text("• Monitoramento clínico recomendado.", 20, yPosition);
+                } else {
+                    doc.text("• Funcionamento cognitivo dentro dos parâmetros esperados", 20, yPosition);
+                    yPosition += 7;
+                    doc.text("  conforme normas da população brasileira.", 20, yPosition);
+                }
+            } else {
+                doc.text("• Para interpretação normativa completa, incluir dados demográficos.", 20, yPosition);
+            }
+            
+            // Rodapé
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "italic");
+            doc.text("Relatório gerado automaticamente pelo sistema PD-CRS.", 20, 280);
+            doc.text("Baseado nas normas brasileiras (Brandão et al., 2023) e critérios AACN (2020).", 20, 285);
+            
+            // Salvar PDF
+            const fileName = `PD-CRS_${patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+
+        function resetForm() {
+            if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+                // Resetar todos os campos de entrada
+                document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+                    input.value = '';
+                });
+
+                // Resetar select
+                document.querySelectorAll('select').forEach(select => {
+                    select.value = '';
+                });
+
+                // Resetar checkboxes e suas visualizações
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Resetar classes visuais das checkboxes
+                document.querySelectorAll('.clock-checkbox-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+
+                // Resetar seleções
+                document.querySelectorAll('.word-item, .attention-item, .memory-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+
+                // Resetar escores
+                scores = {
+                    immediateMemory: 0,
+                    naming: 0,
+                    attention: 0,
+                    workingMemory: 0,
+                    clockDrawing: 0,
+                    clockCopy: 0,
+                    delayedMemory: 0,
+                    alternatedFluency: 0,
+                    actionFluency: 0
+                };
+
+                memoryTrials = [0, 0, 0];
+
+                // Atualizar exibições
+                const scoreElements = [
+                    'score1', 'score2', 'score3',
+                    'immediateMemoryScore', 'namingScore', 'attentionScore',
+                    'workingMemoryScore', 'clockDrawingScore', 'clockCopyScore',
+                    'delayedMemoryScore', 'alternatedFluencyScore', 'actionFluencyScore',
+                    'frontalScore', 'posteriorScore', 'totalScore'
+                ];
+
+                scoreElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = '0';
+                });
+
+                // Resetar elementos normativos
+                const resetElements = [
+                    { id: 'zScore', value: '--' },
+                    { id: 'tScore', value: '--' },
+                    { id: 'classification', value: '--' },
+                    { id: 'clinicalGuidance', value: '--' },
+                    { id: 'generalInterpretation', value: '--' },
+                    { id: 'totalPercentile', value: 'Percentil: --' },
+                    { id: 'frontalPercentile', value: 'Percentil: --' },
+                    { id: 'posteriorPercentile', value: 'Percentil: --' }
+                ];
+
+                resetElements.forEach(item => {
+                    const element = document.getElementById(item.id);
+                    if (element) element.textContent = item.value;
+                });
+
+                // Limpar tabela de resultados
+                const subtestResults = document.getElementById('subtestResults');
+                if (subtestResults) subtestResults.innerHTML = '';
+            }
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Garantir que todos os escores iniciem em 0
+            calculateScores();
+            
+            // Sincronizar checkboxes com visualização na inicialização
+            document.querySelectorAll('.clock-checkbox-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    item.classList.toggle('selected', checkbox.checked);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+                

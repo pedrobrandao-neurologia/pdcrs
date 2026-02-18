@@ -634,6 +634,300 @@
         .figura-resumo-item.acerto { border-color: #40c057; color: #2f9e44; background: #ebfbee; }
         .figura-resumo-item.erro   { border-color: #fa5252; color: #e03131; background: #fff5f5; }
         .figura-resumo-item.pendente { color: #adb5bd; }
+
+        /* =============================================
+           TELA CHEIA — APRESENTAÇÃO DE FIGURAS
+           ============================================= */
+        .figura-fs-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .figura-fs-overlay.active { display: flex; }
+
+        .figura-fs-topbar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            pointer-events: none;
+        }
+        .figura-fs-topbar > * { pointer-events: all; }
+        .figura-fs-counter {
+            font-size: 0.95em;
+            color: #ced4da;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .btn-fs-exit {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 5px 14px;
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        .btn-fs-exit:hover { background: #f8d7da; color: #dc3545; border-color: #dc3545; }
+
+        .figura-fs-img-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 60px 40px 20px;
+        }
+        .figura-fs-img {
+            max-width: 85vw;
+            max-height: 72vh;
+            object-fit: contain;
+        }
+
+        .figura-fs-controls {
+            width: 100%;
+            padding: 18px 24px;
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        .btn-fs-acerto {
+            background: #2f9e44;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 18px 64px;
+            font-size: 1.25em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 1px;
+            min-width: 200px;
+        }
+        .btn-fs-acerto:hover { background: #2b8a3e; transform: scale(1.02); }
+        .btn-fs-acerto.pressed { background: #1b5e20; transform: scale(0.97); }
+        .btn-fs-acerto.fs-active { background: #1b5e20; box-shadow: 0 0 0 4px #a5d6a7; }
+
+        .btn-fs-erro {
+            background: #e03131;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 18px 64px;
+            font-size: 1.25em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 1px;
+            min-width: 200px;
+        }
+        .btn-fs-erro:hover { background: #c92a2a; transform: scale(1.02); }
+        .btn-fs-erro.pressed { background: #7f1d1d; transform: scale(0.97); }
+        .btn-fs-erro.fs-active { background: #7f1d1d; box-shadow: 0 0 0 4px #ef9a9a; }
+
+        .figura-fs-hint {
+            position: absolute;
+            bottom: 74px;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.72em;
+            color: rgba(0,0,0,0.15);
+            letter-spacing: 1px;
+            pointer-events: none;
+            font-family: monospace;
+        }
+        .figura-fs-flash {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.08s;
+            z-index: 1;
+        }
+        .figura-fs-flash.flash-acerto { background: rgba(64,192,87,0.2); opacity: 1; }
+        .figura-fs-flash.flash-erro   { background: rgba(250,82,82,0.2);  opacity: 1; }
+
+        /* Button to enter fullscreen (inside regular viewer) */
+        .btn-fullscreen-enter {
+            background: #343a40;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 0.85em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-fullscreen-enter:hover { background: #23272b; }
+
+        /* =============================================
+           MODO LEITURA DE PALAVRAS (Memória Verbal)
+           ============================================= */
+        .word-reading-phase {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+            overflow: hidden;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .word-reading-header {
+            background: #495057;
+            color: white;
+            padding: 10px 18px;
+            font-size: 0.88em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .word-reading-display {
+            background: white;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 20px 16px;
+            gap: 14px;
+        }
+        .word-reading-current {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #212529;
+            letter-spacing: 6px;
+            text-align: center;
+            line-height: 1;
+            transition: opacity 0.2s;
+        }
+        .word-reading-current.fade { opacity: 0; }
+        .word-reading-pos {
+            font-size: 0.9em;
+            color: #adb5bd;
+            font-family: monospace;
+        }
+        .word-reading-bar {
+            width: 100%;
+            max-width: 380px;
+            height: 5px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .word-reading-fill {
+            height: 100%;
+            background: #007bff;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .word-dots-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            padding: 8px 16px 4px;
+            flex-wrap: wrap;
+        }
+        .word-dot-rd {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #dee2e6;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .word-dot-rd.dot-current { background: #007bff; transform: scale(1.35); }
+        .word-dot-rd.dot-done    { background: #adb5bd; }
+
+        .word-reading-controls {
+            padding: 12px 16px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+        .btn-word-nav {
+            background: white;
+            border: 2px solid #adb5bd;
+            border-radius: 6px;
+            padding: 8px 18px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.2s;
+        }
+        .btn-word-nav:hover:not(:disabled) { border-color: #007bff; color: #007bff; }
+        .btn-word-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-tts-word {
+            background: #6610f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-tts-word:hover { background: #520dc2; }
+        .btn-autoplay-word {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-autoplay-word.playing { background: #e03131; }
+        .btn-autoplay-word:hover { opacity: 0.88; }
+        .btn-start-recall {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 14px 16px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn-start-recall:hover { background: #0a58ca; }
+        .btn-back-reading {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 7px 16px;
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin: 6px 0 4px 0;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-back-reading:hover { border-color: #007bff; color: #007bff; }
     </style>
 </head>
 <body>
@@ -692,76 +986,172 @@
                         </ul>
                     </div>
 
+                    <!-- ═══════════ TENTATIVA 1 ═══════════ -->
                     <div class="mb-3">
                         <span class="trial-header">▶ TENTATIVA 1</span>
                         <div class="patient-instruction">
                             <div class="patient-instruction-header">🔊 Leia ao Paciente — 1ª Tentativa</div>
                             <p>"Eu vou ler uma lista de palavras e, quando finalizar, quero que você repita o maior número de palavras que puder se recordar. <strong>Não precisa ser na mesma ordem da minha leitura.</strong> Alguma dúvida? Podemos começar?"</p>
                         </div>
-                        <div class="examiner-note">▶ Leia as 12 palavras abaixo em voz alta, uma por segundo. Ao concluir, aguarde em silêncio as respostas do paciente. Clique em cada palavra que o paciente recordar corretamente.</div>
-                        <div class="word-grid" id="memory1">
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="luz">LUZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="seda">SEDA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="areia">AREIA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="cilio">CÍLIO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="arroz">ARROZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="gravata">GRAVATA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="quadro">QUADRO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="bicicleta">BICICLETA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="estrela">ESTRELA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="leao">LEÃO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="anel">ANEL</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="perfume">PERFUME</div>
+
+                        <!-- FASE DE LEITURA — Trial 1 -->
+                        <div id="readingPhase1" class="word-reading-phase">
+                            <div class="word-reading-header">
+                                📖 Fase de Leitura — Apresente cada palavra ao paciente (uma por vez)
+                            </div>
+                            <div class="word-reading-display">
+                                <div class="word-reading-current" id="wordDisplay1">LUZ</div>
+                                <div class="word-reading-pos" id="wordPos1">1 / 12</div>
+                                <div class="word-reading-bar">
+                                    <div class="word-reading-fill" id="wordFill1" style="width:8.33%"></div>
+                                </div>
+                            </div>
+                            <div class="word-dots-row" id="wordDots1"></div>
+                            <div class="word-reading-controls">
+                                <button class="btn-word-nav" id="btnWordPrev1" onclick="prevWord(1)" disabled>← Anterior</button>
+                                <button class="btn-tts-word" onclick="speakCurrentWord(1)" title="Ler palavra em voz alta via síntese de voz">🔊 Ouvir</button>
+                                <button class="btn-autoplay-word" id="btnAutoPlay1" onclick="toggleAutoPlay(1)" title="Leitura automática com intervalo de 2 segundos por palavra">▶ Auto-ler</button>
+                                <button class="btn-word-nav" id="btnWordNext1" onclick="nextWord(1)">Próxima →</button>
+                            </div>
+                            <button class="btn-start-recall" onclick="startRecallPhase(1)">
+                                ✓ Leitura concluída — Aguardar e registrar as respostas do paciente
+                            </button>
                         </div>
-                        <p>Pontuação Tentativa 1: <span id="score1">0</span>/12</p>
+
+                        <!-- FASE DE EVOCAÇÃO — Trial 1 -->
+                        <div id="recallPhase1" style="display:none">
+                            <div class="examiner-note">▶ Aguarde o paciente evocar as palavras em qualquer ordem. Clique em cada palavra corretamente recordada.</div>
+                            <div class="word-grid" id="memory1">
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="luz">LUZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="seda">SEDA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="areia">AREIA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="cilio">CÍLIO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="arroz">ARROZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="gravata">GRAVATA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="quadro">QUADRO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="bicicleta">BICICLETA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="estrela">ESTRELA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="leao">LEÃO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="anel">ANEL</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem1')" data-word="perfume">PERFUME</div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+                                <button class="btn-back-reading" onclick="backToReading(1)">↩ Reler as palavras</button>
+                                <p style="margin:0">Pontuação Tentativa 1: <strong><span id="score1">0</span>/12</strong></p>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- ═══════════ TENTATIVA 2 ═══════════ -->
                     <div class="mb-3">
                         <span class="trial-header">▶ TENTATIVA 2</span>
                         <div class="patient-instruction">
                             <div class="patient-instruction-header">🔊 Leia ao Paciente — 2ª Tentativa</div>
                             <p>"Agora vou ler as mesmas palavras e quero que se lembre da maior quantidade que puder se lembrar, <strong>inclusive as palavras que já foram ditas na primeira tentativa.</strong> Não importa a ordem das palavras, procure dizer todas elas incluindo aquelas que já foram recordadas na vez anterior. Pronto?"</p>
                         </div>
-                        <div class="examiner-note">▶ Leia novamente as 12 palavras no mesmo ritmo. Aguarde as respostas. Marque <em>todas</em> as palavras da lista que o paciente disser, mesmo que já tenham sido ditas na 1ª tentativa.</div>
-                        <div class="word-grid" id="memory2">
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="luz">LUZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="seda">SEDA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="areia">AREIA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="cilio">CÍLIO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="arroz">ARROZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="gravata">GRAVATA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="quadro">QUADRO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="bicicleta">BICICLETA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="estrela">ESTRELA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="leao">LEÃO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="anel">ANEL</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="perfume">PERFUME</div>
+
+                        <!-- FASE DE LEITURA — Trial 2 -->
+                        <div id="readingPhase2" class="word-reading-phase">
+                            <div class="word-reading-header">
+                                📖 Fase de Leitura — Apresente cada palavra ao paciente (uma por vez)
+                            </div>
+                            <div class="word-reading-display">
+                                <div class="word-reading-current" id="wordDisplay2">LUZ</div>
+                                <div class="word-reading-pos" id="wordPos2">1 / 12</div>
+                                <div class="word-reading-bar">
+                                    <div class="word-reading-fill" id="wordFill2" style="width:8.33%"></div>
+                                </div>
+                            </div>
+                            <div class="word-dots-row" id="wordDots2"></div>
+                            <div class="word-reading-controls">
+                                <button class="btn-word-nav" id="btnWordPrev2" onclick="prevWord(2)" disabled>← Anterior</button>
+                                <button class="btn-tts-word" onclick="speakCurrentWord(2)">🔊 Ouvir</button>
+                                <button class="btn-autoplay-word" id="btnAutoPlay2" onclick="toggleAutoPlay(2)">▶ Auto-ler</button>
+                                <button class="btn-word-nav" id="btnWordNext2" onclick="nextWord(2)">Próxima →</button>
+                            </div>
+                            <button class="btn-start-recall" onclick="startRecallPhase(2)">
+                                ✓ Leitura concluída — Aguardar e registrar as respostas do paciente
+                            </button>
                         </div>
-                        <p>Pontuação Tentativa 2: <span id="score2">0</span>/12</p>
+
+                        <!-- FASE DE EVOCAÇÃO — Trial 2 -->
+                        <div id="recallPhase2" style="display:none">
+                            <div class="examiner-note">▶ Aguarde o paciente evocar as palavras. Marque <em>todas</em> as palavras da lista que o paciente disser, mesmo que já tenham sido ditas na 1ª tentativa.</div>
+                            <div class="word-grid" id="memory2">
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="luz">LUZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="seda">SEDA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="areia">AREIA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="cilio">CÍLIO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="arroz">ARROZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="gravata">GRAVATA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="quadro">QUADRO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="bicicleta">BICICLETA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="estrela">ESTRELA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="leao">LEÃO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="anel">ANEL</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem2')" data-word="perfume">PERFUME</div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+                                <button class="btn-back-reading" onclick="backToReading(2)">↩ Reler as palavras</button>
+                                <p style="margin:0">Pontuação Tentativa 2: <strong><span id="score2">0</span>/12</strong></p>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- ═══════════ TENTATIVA 3 ═══════════ -->
                     <div class="mb-3">
                         <span class="trial-header">▶ TENTATIVA 3</span>
                         <div class="patient-instruction">
                             <div class="patient-instruction-header">🔊 Leia ao Paciente — 3ª Tentativa</div>
                             <p>"Agora, vou ler as mesmas palavras pela terceira vez e quero que se lembre da maior quantidade que puder se lembrar, <strong>inclusive as palavras que já foram ditas nas tentativas anteriores.</strong> Não importa a ordem das palavras, procure dizer todas elas incluindo aquelas que já foram recordadas na vez anterior. Pronto?"</p>
                         </div>
-                        <div class="examiner-note">▶ Leia as 12 palavras pela terceira e última vez. Aguarde as respostas. Marque todas as palavras da lista que o paciente recordar corretamente.</div>
-                        <div class="word-grid" id="memory3">
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="luz">LUZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="seda">SEDA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="areia">AREIA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="cilio">CÍLIO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="arroz">ARROZ</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="gravata">GRAVATA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="quadro">QUADRO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="bicicleta">BICICLETA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="estrela">ESTRELA</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="leao">LEÃO</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="anel">ANEL</div>
-                            <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="perfume">PERFUME</div>
+
+                        <!-- FASE DE LEITURA — Trial 3 -->
+                        <div id="readingPhase3" class="word-reading-phase">
+                            <div class="word-reading-header">
+                                📖 Fase de Leitura — Apresente cada palavra ao paciente (uma por vez)
+                            </div>
+                            <div class="word-reading-display">
+                                <div class="word-reading-current" id="wordDisplay3">LUZ</div>
+                                <div class="word-reading-pos" id="wordPos3">1 / 12</div>
+                                <div class="word-reading-bar">
+                                    <div class="word-reading-fill" id="wordFill3" style="width:8.33%"></div>
+                                </div>
+                            </div>
+                            <div class="word-dots-row" id="wordDots3"></div>
+                            <div class="word-reading-controls">
+                                <button class="btn-word-nav" id="btnWordPrev3" onclick="prevWord(3)" disabled>← Anterior</button>
+                                <button class="btn-tts-word" onclick="speakCurrentWord(3)">🔊 Ouvir</button>
+                                <button class="btn-autoplay-word" id="btnAutoPlay3" onclick="toggleAutoPlay(3)">▶ Auto-ler</button>
+                                <button class="btn-word-nav" id="btnWordNext3" onclick="nextWord(3)">Próxima →</button>
+                            </div>
+                            <button class="btn-start-recall" onclick="startRecallPhase(3)">
+                                ✓ Leitura concluída — Aguardar e registrar as respostas do paciente
+                            </button>
                         </div>
-                        <p>Pontuação Tentativa 3: <span id="score3">0</span>/12</p>
+
+                        <!-- FASE DE EVOCAÇÃO — Trial 3 -->
+                        <div id="recallPhase3" style="display:none">
+                            <div class="examiner-note">▶ Leia as 12 palavras pela terceira e última vez. Aguarde as respostas. Marque todas as palavras da lista que o paciente recordar corretamente.</div>
+                            <div class="word-grid" id="memory3">
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="luz">LUZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="seda">SEDA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="areia">AREIA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="cilio">CÍLIO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="arroz">ARROZ</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="gravata">GRAVATA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="quadro">QUADRO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="bicicleta">BICICLETA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="estrela">ESTRELA</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="leao">LEÃO</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="anel">ANEL</div>
+                                <div class="word-item" onclick="toggleWord(this, 'mem3')" data-word="perfume">PERFUME</div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+                                <button class="btn-back-reading" onclick="backToReading(3)">↩ Reler as palavras</button>
+                                <p style="margin:0">Pontuação Tentativa 3: <strong><span id="score3">0</span>/12</strong></p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="alert alert-info">
@@ -805,10 +1195,13 @@
                     <!-- MODO APRESENTAÇÃO -->
                     <div id="namingApresentacaoView">
                         <div class="figura-viewer-container">
-                            <!-- Header: contador + bolinhas de progresso -->
+                            <!-- Header: contador + bolinhas de progresso + botão tela cheia -->
                             <div class="figura-header">
                                 <div class="figura-contador">Figura <span id="figuraNum">1</span> de 20</div>
                                 <div class="figura-dots" id="figuraDots"></div>
+                                <button class="btn-fullscreen-enter" onclick="enterFiguraFullscreen()" title="Apresentar em tela cheia ao paciente">
+                                    ⤢ Tela Cheia
+                                </button>
                             </div>
 
                             <!-- Área da imagem -->
@@ -819,7 +1212,7 @@
                                 </div>
                             </div>
 
-                            <!-- Barra de informação ao examinador -->
+                            <!-- Barra do EXAMINADOR: resposta esperada (visível apenas nesta view, não no fullscreen) -->
                             <div class="figura-examiner-bar" id="figuraExaminadorInfo">
                                 <strong>Resposta esperada:</strong> — &nbsp;|&nbsp; <strong>Sinônimos aceitos:</strong> —
                             </div>
@@ -2382,6 +2775,15 @@
                 figuraAtual = 0;
                 if (modoApresentacao) showFigura(0);
 
+                // Resetar fase de leitura das tentativas de memória
+                [1, 2, 3].forEach(t => {
+                    stopAutoPlay(t);
+                    wordReadingIndex[t - 1] = 0;
+                    document.getElementById('readingPhase' + t).style.display = 'block';
+                    document.getElementById('recallPhase'  + t).style.display = 'none';
+                    initWordReading(t);
+                });
+
                 // Atualizar exibições
                 const scoreElements = [
                     'score1', 'score2', 'score3',
@@ -2423,6 +2825,224 @@
             window.print();
         }
 
+        // ============================================================
+        // TELA CHEIA — APRESENTAÇÃO DE FIGURAS
+        // ============================================================
+
+        function enterFiguraFullscreen() {
+            const fig = figurasData[figuraAtual];
+            const imgSrc = figuraImagens[fig.id] || fig.img || getPlaceholderSVG(fig.id);
+            document.getElementById('figuraFSImg').src = imgSrc;
+            document.getElementById('figuraFSCounter').textContent = (figuraAtual + 1) + '/20';
+            // Reset button state (sem highlight de resultado para não distrair o paciente)
+            document.getElementById('btnFSAcerto').className = 'btn-fs-acerto';
+            document.getElementById('btnFSErro').className   = 'btn-fs-erro';
+            const overlay = document.getElementById('figuraFullscreenOverlay');
+            overlay.classList.add('active');
+            // Solicitar fullscreen nativo do navegador
+            if (overlay.requestFullscreen) overlay.requestFullscreen().catch(() => {});
+            else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
+        }
+
+        function exitFiguraFullscreen() {
+            const overlay = document.getElementById('figuraFullscreenOverlay');
+            overlay.classList.remove('active');
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+            // Sincronizar o viewer regular
+            showFigura(figuraAtual);
+        }
+
+        function scoreFiguraFS(isAcerto) {
+            figurasResultados[figuraAtual] = isAcerto;
+            updateNamingScoreFromFiguras();
+
+            // Flash visual de feedback
+            const flash = document.getElementById('figuraFSFlash');
+            flash.className = 'figura-fs-flash ' + (isAcerto ? 'flash-acerto' : 'flash-erro');
+            setTimeout(() => { flash.className = 'figura-fs-flash'; }, 280);
+
+            // Destaque momentâneo no botão
+            const btnId = isAcerto ? 'btnFSAcerto' : 'btnFSErro';
+            const btn = document.getElementById(btnId);
+            btn.classList.add('pressed');
+            setTimeout(() => btn.classList.remove('pressed'), 200);
+
+            // Avança para a próxima figura ou encerra o fullscreen
+            if (figuraAtual < 19) {
+                setTimeout(() => {
+                    figuraAtual++;
+                    const fig = figurasData[figuraAtual];
+                    document.getElementById('figuraFSImg').src =
+                        figuraImagens[fig.id] || fig.img || getPlaceholderSVG(fig.id);
+                    document.getElementById('figuraFSCounter').textContent = (figuraAtual + 1) + '/20';
+                    document.getElementById('btnFSAcerto').className = 'btn-fs-acerto';
+                    document.getElementById('btnFSErro').className   = 'btn-fs-erro';
+                }, 380);
+            } else {
+                // Todas as 20 figuras concluídas
+                setTimeout(exitFiguraFullscreen, 700);
+            }
+        }
+
+        // Atalhos de teclado durante o fullscreen (A/E + setas de navegação)
+        document.addEventListener('keydown', function(e) {
+            const overlay = document.getElementById('figuraFullscreenOverlay');
+            if (!overlay || !overlay.classList.contains('active')) return;
+
+            if (e.key === 'a' || e.key === 'A') { e.preventDefault(); scoreFiguraFS(true); }
+            else if (e.key === 'e' || e.key === 'E') { e.preventDefault(); scoreFiguraFS(false); }
+            else if (e.key === 'Escape')            { exitFiguraFullscreen(); }
+            else if (e.key === 'ArrowRight' && figuraAtual < 19) {
+                e.preventDefault();
+                figuraAtual++;
+                const fig = figurasData[figuraAtual];
+                document.getElementById('figuraFSImg').src =
+                    figuraImagens[fig.id] || fig.img || getPlaceholderSVG(fig.id);
+                document.getElementById('figuraFSCounter').textContent = (figuraAtual + 1) + '/20';
+                document.getElementById('btnFSAcerto').className = 'btn-fs-acerto';
+                document.getElementById('btnFSErro').className   = 'btn-fs-erro';
+            }
+            else if (e.key === 'ArrowLeft' && figuraAtual > 0) {
+                e.preventDefault();
+                figuraAtual--;
+                const fig = figurasData[figuraAtual];
+                document.getElementById('figuraFSImg').src =
+                    figuraImagens[fig.id] || fig.img || getPlaceholderSVG(fig.id);
+                document.getElementById('figuraFSCounter').textContent = (figuraAtual + 1) + '/20';
+                document.getElementById('btnFSAcerto').className = 'btn-fs-acerto';
+                document.getElementById('btnFSErro').className   = 'btn-fs-erro';
+            }
+        });
+
+        // ============================================================
+        // MODO LEITURA DE PALAVRAS — MEMÓRIA VERBAL
+        // ============================================================
+
+        const memoryWords = [
+            'LUZ', 'SEDA', 'AREIA', 'CÍLIO', 'ARROZ', 'GRAVATA',
+            'QUADRO', 'BICICLETA', 'ESTRELA', 'LEÃO', 'ANEL', 'PERFUME'
+        ];
+
+        let wordReadingIndex  = [0, 0, 0];        // posição atual por trial
+        let wordAutoPlaying   = [false, false, false];
+        let wordAutoPlayTimer = [null, null, null];
+
+        // Inicializa os dots e display para uma trial
+        function initWordReading(trial) {
+            wordReadingIndex[trial - 1] = 0;
+            renderWordDisplay(trial);
+        }
+
+        function renderWordDisplay(trial) {
+            const t   = trial - 1;
+            const idx = wordReadingIndex[t];
+            const word = memoryWords[idx];
+
+            // Texto principal (com fade suave)
+            const display = document.getElementById('wordDisplay' + trial);
+            display.classList.add('fade');
+            setTimeout(() => {
+                display.textContent = word;
+                display.classList.remove('fade');
+            }, 120);
+
+            // Posição e barra de progresso
+            document.getElementById('wordPos'  + trial).textContent  = (idx + 1) + ' / 12';
+            document.getElementById('wordFill' + trial).style.width  = ((idx + 1) / 12 * 100) + '%';
+
+            // Botão anterior
+            document.getElementById('btnWordPrev' + trial).disabled = (idx === 0);
+
+            // Dots
+            const dotsEl = document.getElementById('wordDots' + trial);
+            dotsEl.innerHTML = '';
+            memoryWords.forEach((w, i) => {
+                const dot = document.createElement('span');
+                dot.className = 'word-dot-rd' +
+                    (i === idx ? ' dot-current' : i < idx ? ' dot-done' : '');
+                dot.title = w;
+                dot.onclick = () => { stopAutoPlay(trial); wordReadingIndex[t] = i; renderWordDisplay(trial); };
+                dotsEl.appendChild(dot);
+            });
+        }
+
+        function prevWord(trial) {
+            stopAutoPlay(trial);
+            if (wordReadingIndex[trial - 1] > 0) {
+                wordReadingIndex[trial - 1]--;
+                renderWordDisplay(trial);
+            }
+        }
+
+        function nextWord(trial) {
+            stopAutoPlay(trial);
+            if (wordReadingIndex[trial - 1] < 11) {
+                wordReadingIndex[trial - 1]++;
+                renderWordDisplay(trial);
+            }
+        }
+
+        function speakCurrentWord(trial) {
+            if (!('speechSynthesis' in window)) {
+                alert('Síntese de voz não suportada neste navegador.');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const word = memoryWords[wordReadingIndex[trial - 1]];
+            const utt  = new SpeechSynthesisUtterance(word);
+            utt.lang  = 'pt-BR';
+            utt.rate  = 0.72;
+            utt.pitch = 1.0;
+            window.speechSynthesis.speak(utt);
+        }
+
+        function toggleAutoPlay(trial) {
+            wordAutoPlaying[trial - 1] ? stopAutoPlay(trial) : startAutoPlay(trial);
+        }
+
+        function startAutoPlay(trial) {
+            wordAutoPlaying[trial - 1] = true;
+            const btn = document.getElementById('btnAutoPlay' + trial);
+            if (btn) { btn.textContent = '⏸ Pausar'; btn.classList.add('playing'); }
+            autoPlayNext(trial);
+        }
+
+        function stopAutoPlay(trial) {
+            wordAutoPlaying[trial - 1] = false;
+            if (wordAutoPlayTimer[trial - 1]) clearTimeout(wordAutoPlayTimer[trial - 1]);
+            window.speechSynthesis.cancel();
+            const btn = document.getElementById('btnAutoPlay' + trial);
+            if (btn) { btn.textContent = '▶ Auto-ler'; btn.classList.remove('playing'); }
+        }
+
+        function autoPlayNext(trial) {
+            if (!wordAutoPlaying[trial - 1]) return;
+            speakCurrentWord(trial);
+            // 2 200 ms: ~800 ms para ouvir a palavra + ~1 400 ms de silêncio
+            wordAutoPlayTimer[trial - 1] = setTimeout(() => {
+                if (!wordAutoPlaying[trial - 1]) return;
+                if (wordReadingIndex[trial - 1] < 11) {
+                    wordReadingIndex[trial - 1]++;
+                    renderWordDisplay(trial);
+                    autoPlayNext(trial);
+                } else {
+                    stopAutoPlay(trial);
+                }
+            }, 2200);
+        }
+
+        function startRecallPhase(trial) {
+            stopAutoPlay(trial);
+            document.getElementById('readingPhase' + trial).style.display = 'none';
+            document.getElementById('recallPhase'  + trial).style.display = 'block';
+        }
+
+        function backToReading(trial) {
+            document.getElementById('recallPhase'  + trial).style.display = 'none';
+            document.getElementById('readingPhase' + trial).style.display = 'block';
+        }
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
             // Garantir que todos os escores iniciem em 0
@@ -2430,6 +3050,11 @@
 
             // Inicializar o modo de apresentação de figuras
             showFigura(0);
+
+            // Inicializar a fase de leitura das 3 tentativas de memória
+            initWordReading(1);
+            initWordReading(2);
+            initWordReading(3);
 
             // Sincronizar checkboxes com visualização na inicialização
             document.querySelectorAll('.clock-checkbox-item').forEach(item => {
@@ -2440,6 +3065,40 @@
             });
         });
     </script>
+
+    <!-- ================================================
+         OVERLAY — TELA CHEIA PARA APRESENTAÇÃO DE FIGURAS
+         (Apenas figura + botões Acerto/Erro, sem resposta correta)
+         ================================================ -->
+    <div id="figuraFullscreenOverlay" class="figura-fs-overlay">
+        <!-- Topbar: contador (discreto) + botão sair -->
+        <div class="figura-fs-topbar">
+            <div class="figura-fs-counter" id="figuraFSCounter">1/20</div>
+            <button class="btn-fs-exit" onclick="exitFiguraFullscreen()">✕ Sair (ESC)</button>
+        </div>
+
+        <!-- Área da imagem — ocupa todo o espaço central -->
+        <div class="figura-fs-img-area">
+            <img id="figuraFSImg" src="" alt="Figura" class="figura-fs-img">
+        </div>
+
+        <!-- Controles do examinador — apenas Acerto e Erro, SEM resposta correta -->
+        <div class="figura-fs-controls">
+            <button class="btn-fs-acerto" id="btnFSAcerto" onclick="scoreFiguraFS(true)">
+                ✓ ACERTO
+            </button>
+            <button class="btn-fs-erro" id="btnFSErro" onclick="scoreFiguraFS(false)">
+                ✗ ERRO
+            </button>
+        </div>
+
+        <!-- Dica de teclado (quase invisível para o paciente) -->
+        <div class="figura-fs-hint">A = Acerto &nbsp;&nbsp;|&nbsp;&nbsp; E = Erro &nbsp;&nbsp;|&nbsp;&nbsp; ESC = Sair</div>
+
+        <!-- Flash de feedback visual ao pontuar -->
+        <div class="figura-fs-flash" id="figuraFSFlash"></div>
+    </div>
+
 </body>
 </html>
                 
